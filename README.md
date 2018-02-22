@@ -11,3 +11,6 @@ pip install -r requirements.txt
 
 - Pour PyCharm, il faut effectuer cette étape:
 ![](doc/mark_as_source.png?raw=true) 
+
+# Diagramme entité relation
+![](doc/ERDiag.png?raw=true) 
