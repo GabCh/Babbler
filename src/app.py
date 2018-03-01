@@ -1,14 +1,5 @@
 import os
-from flask import Flask
-from flask import request
-from flask import session
-from flask import g
-from flask import redirect
-from flask import url_for
-from flask import abort
-from flask import render_template
-from flask import flash
-
+from flask import Flask, render_template, request
 app = Flask(__name__)
 app.config.from_object(__name__)
 
@@ -23,6 +14,15 @@ app.config.update(dict(
 @app.route("/")
 def main():
     return "Bonjour et bienvenue!"
+
+
+@app.route("/search")
+def search_form():
+    keyword = request.args.get('keyword')
+    if keyword:
+        return render_template('search_results.html', keyword=keyword)
+    else:
+        return render_template('search.html')
 
 
 if __name__ == "__main__":
