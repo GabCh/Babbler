@@ -1,15 +1,16 @@
-import sqlite3
+from flaskext.mysql import MySQL
 
 
 class BabblerDB(object):
 
-    def __init__(self):
-        self.db = sqlite3.connect('babbler.db')
-        self.cursor = self.db.cursor()
+    def __init__(self, app):
+        self.mysql = MySQL()
+        self.mysql.init_app(app)
+        self.cursor = self.mysql.get_db().cursor()
 
-    def create_table_babbler(self):
+    def create_table_babblers(self):
         sql = """
-            CREATE TABLE babbler (
+            CREATE TABLE babblers (
             Username VARCHAR(16) PRIMARY KEY,
             PublicName VARCHAR(16),
             Password VARCHAR(32)
