@@ -51,7 +51,7 @@ def home():
 @app.route('/myprofile')
 def profile():
     if session['logged_in']:
-        return render_template('profile.html')
+        return render_template('myprofile.html')
     else:
         return redirect(url_for('/login'))
 

@@ -1,3 +1,6 @@
+{% extends "app.html" -%}
+{% block content -%}
 <form action="/search" method="GET">
-<input type="text" name="keyword"><button>Go</button>
+    <input type="text" name="keyword"><button>Go</button>
 </form>
+{%- endblock content %}

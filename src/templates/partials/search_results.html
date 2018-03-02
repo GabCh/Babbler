@@ -1,4 +1,5 @@
-<!doctype html>
+{% extends "app.html" -%}
+{% block content -%}
 <form action="/search" method="GET">
     {% if keyword %}
         <input type="text" value="{{ keyword }}" name="keyword"><button>Go</button>
@@ -13,3 +14,4 @@
         <h1>placeholder</h1>
     {% endif %}
 </div>
+{%- endblock content %}
