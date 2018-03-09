@@ -12,7 +12,13 @@ app.config.update(dict(
 ))
 
 #  temp until DB is setup
-users = []
+users = [
+    {
+        'username': 'gablalib',
+        'public_name': 'GabL',
+        'password': ''
+    }
+]
 
 
 @app.route('/')
@@ -31,21 +37,15 @@ def search_form():
 
 @app.route('/login')
 def login():
-    error = None
+    view = render_template('partials/login.html')
     if request.method == 'POST':
-        if request.form['user'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            return redirect(url_for('/home'))
-    return render_template('partials/login.html', error=error)
+        view = redirect(url_for('/'))
+    return view
 
 
 @app.route('/register')
 def register():
-    return render_template('/partials/register.html')
+    return render_template('/partials/register.html', users=users)  # TODO: get users from db
 
 
 @app.route('/myprofile')
