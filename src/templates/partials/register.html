@@ -2,18 +2,27 @@
 
 {% block body %}
 <div class="section">
-    <p class="title is-2 is-spaced">Login</p>
-    <p class="subtitle is-4">Existing user</p>
+    <p class="title is-2 is-spaced">Register</p>
+    <p class="subtitle is-4">New user</p>
     <div class="box">
         <div class="level">
             <div class="level-item has-text-centered">
-                <div class="field">
+                <div class="field wide-inputs">
                     <div class="control">
+                        <p>Choose a unique username:</p>
                         <input id="username" class="input is-primary is-medium spaced" type="text" placeholder="Username">
+
+                        <p>Choose a public name:</p>
+                        <input id="public_name" class="input is-primary is-medium spaced" type="text" placeholder="Public name">
+
+                        <p>Choose a secure password:</p>
                         <input id="password" class="input is-primary is-medium spaced" type="password" placeholder="Password">
+
+                        <p>Re-enter your password:</p>
+                        <input id="password2" class="input is-primary is-medium spaced" type="password" placeholder="Password">
                         <div class="level">
                             <div class="level-item has-text-centered">
-                                <button class="button is-info is-spaced" type="submit">Login</button>
+                                <button class="button is-info is-spaced" type="submit">Register</button>
                             </div>
                         </div>
                     </div>

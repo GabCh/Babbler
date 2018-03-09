@@ -11,6 +11,9 @@ app.config.update(dict(
     PASSWORD='NodesBand420!'
 ))
 
+#  temp until DB is setup
+users = []
+
 
 @app.route('/')
 def main():
@@ -37,15 +40,13 @@ def login():
         else:
             session['logged_in'] = True
             return redirect(url_for('/home'))
-    return render_template('login.html', error=error)
+    return render_template('partials/login.html', error=error)
 
 
-@app.route('/home')
-def home():
-    if session['logged_in']:
-        return render_template('newsfeed.html')
-    else:
-        return render_template('homepage.html')
+@app.route('/register')
+def register():
+    return render_template('/partials/register.html')
+
 
 
 @app.route('/myprofile')
