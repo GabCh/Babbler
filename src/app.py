@@ -14,16 +14,16 @@ app.config.update(dict(
 
 @app.route('/')
 def main():
-    return 'Bonjour et bienvenue!'
+    return render_template('index.html')
 
 
 @app.route('/search')
 def search_form():
     keyword = request.args.get('keyword')
     if keyword:
-        return render_template('search_results.html', keyword=keyword)
+        return render_template('/partials/search_results.html', keyword=keyword)
     else:
-        return render_template('search.html')
+        return render_template('index.html')
 
 
 @app.route('/login')
