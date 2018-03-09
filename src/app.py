@@ -48,7 +48,6 @@ def register():
     return render_template('/partials/register.html')
 
 
-
 @app.route('/myprofile')
 def profile():
     if session['logged_in']:
