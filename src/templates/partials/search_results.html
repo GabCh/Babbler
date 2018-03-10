@@ -1,12 +1,5 @@
 {% extends "layout.html" %}
-{% block content %}
-<form action="/search" method="GET">
-    {% if keyword %}
-        <input type="text" value="{{ keyword }}" name="keyword"><button>Go</button>
-    {% else %}
-        <input type="text" value="{{ keyword }}" name="keyword"><button>Go</button>
-    {% endif %}
-</form>
+{% block body %}
 <div>
     {% if keyword %}
         <h1>{{ keyword }}</h1>

@@ -55,19 +55,10 @@ def main():
     return render_template('index.html')
 
 
-
 @app.route('/search')
 def search_form():
     keyword = request.args.get('keyword')
     if keyword:
-        try:
-            with connection.cursor() as cursor:
-                sql = "SELECT * FROM `babbles`"
-                cursor.execute(sql)
-                result = cursor.fetchall()
-                print(result)
-        finally:
-            connection.close()
         return render_template('/partials/search_results.html', keyword=keyword)
     else:
         return render_template('index.html')
