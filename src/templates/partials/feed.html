@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    {% for C in cards %}
+    <div class="section">
+        <div class="box">
+            <article class="tile is-child notification is-primary">
+                <p><b>{{C.user}}</b></p>
+                <p><i>{{C.time}}</i></p>
+                <article class="tile is-child notification is-light">
+                    <p class="is-spaced">{{C.message}}</p>
+                </article>
+            </article>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}
