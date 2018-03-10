@@ -32,21 +32,27 @@ class BabblerDB(object):
         self.cursor.execute(sql)
         print('Inserted ' + username + ' into table babblers!')
 
-    def read(self, table, keyword, attribute):
+    def read_table(self, table, keyword, attribute):
         sql = list()
         sql.append("SELECT * FROM %s " % table)
-        sql.append("WHERE %s LIKE '%%%s'" % (attribute, keyword))
+        sql.append("WHERE %s LIKE '%%%s%%'" % (attribute, keyword))
         sql.append(";")
         query = "".join(sql)
         cur = self.connection.cursor()
         cur.execute(query)
         data = cur.fetchall()
-        return json.JSONEncoder().encode(data) # TODO make json valid for templating
+        return self.make_json_for_tuple(data)
 
-    def delete(self, table, **kwargs):
-        sql = list()
-        sql.append("DELETE FROM %s " % table)
-        sql.append("WHERE " + " AND ".join("%s = '%s'" % (k, v) for k, v in kwargs.items()))
-        sql.append(";")
-        query = "".join(sql)
-        return self.cursor.execute(query)
+    @staticmethod
+    def make_json_for_tuple(data): # TODO: faire qu'elle fonctionne pour n'importe quelle table
+        json = dict()
+        json['babbles'] = []
+        for tuple in data:
+            babble = dict()
+            babble['id'] = tuple[0]
+            babble['pseudo'] = tuple[1]
+            babble['message'] = tuple[2]
+            babble['time_s'] = tuple[3]
+            babble['tags'] = tuple[4]
+            json['babbles'].append(babble)
+        return json

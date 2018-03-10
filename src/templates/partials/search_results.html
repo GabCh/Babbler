@@ -3,7 +3,7 @@
 <div class="section">
     <p class="title is-2 is-spaced">Search results for : {{ keyword }}</p>
     <div class="box">
-        {% for babble in babbles %}
+        {% for babble in babbles.babbles %}
         <div class="box">
             <div class="level">
                 {{ babble.pseudo }}
@@ -11,7 +11,7 @@
             <div class="level">
                 {{ babble.message }}
             </div>
-            {{babble.time_s}}
+            {{ babble.time_s }}
         </div>
         {% endfor %}
     </div>
