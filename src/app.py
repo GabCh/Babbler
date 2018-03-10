@@ -1,13 +1,14 @@
 import os
 
 from flask import Flask, render_template, request, session, url_for, redirect
+from data.babblerdb import BabblerDB
 
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
 app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'babbler.db'),
+    DATABASE_URI='mysql://root@localhost/Babbler',
     SECRET_KEY='dev key (change later)',
     USERNAME='admin',
     PASSWORD='NodesBand420!'
@@ -22,6 +23,10 @@ users = [
     }
 ]
 
+db = BabblerDB(app)
+BABBLES_TABLE = 'babbles'
+BABBLERS_TABLE = 'babblers'
+
 
 @app.route('/')
 def main():
@@ -32,7 +37,9 @@ def main():
 def search_form():
     keyword = request.args.get('keyword')
     if keyword:
-        return render_template('/partials/search_results.html', keyword=keyword)
+        babbles = db.read(BABBLES_TABLE, keyword, 'message')
+        babblers = db.read(BABBLERS_TABLE, keyword, 'PublicName')
+        return render_template('/partials/search_results.html', keyword=keyword, babbles=babbles, babblers=babblers)
     else:
         return render_template('index.html')
 

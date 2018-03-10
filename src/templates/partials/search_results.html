@@ -1,10 +1,19 @@
 {% extends "layout.html" %}
 {% block body %}
-<div>
-    {% if keyword %}
-        <h1>{{ keyword }}</h1>
-    {% else %}
-        <h1>placeholder</h1>
-    {% endif %}
+<div class="section">
+    <p class="title is-2 is-spaced">Search results for : {{ keyword }}</p>
+    <div class="box">
+        {% for babble in babbles %}
+        <div class="box">
+            <div class="level">
+                {{ babble.pseudo }}
+            </div>
+            <div class="level">
+                {{ babble.message }}
+            </div>
+            {{babble.time_s}}
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
