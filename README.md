@@ -1,4 +1,4 @@
-# Twitty
+# Babbler
 Homemade twitter-like web application
 
 # Installation
