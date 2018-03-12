@@ -5,6 +5,7 @@
     height: 2.5rem;
     padding-top: 8px;
     background-color: #f5f5f5;
+    z-index: 99;
 }
 
 .spaced {

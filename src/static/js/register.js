@@ -2,6 +2,7 @@ var validUser = false
 var validPublic = false
 var validPass = false
 var validPass2 = false
+var user_exists = false
 
 function showCross(icon) {
     icon.classList.add('fa-times-circle', 'has-text-danger')
@@ -21,20 +22,24 @@ function showSpinner(icon) {
     icon.style.display = 'block'
 }
 
-function verifyUsername(users) {
-    var username = document.getElementById('username').value
-    var user_check = document.getElementById('user_check')
-    var exists = false;
+function verifyUsername() {
+    var username = document.getElementById('username').value;
+    var user_check = document.getElementById('user_check');
+    var self = this;
 
     showSpinner(user_check);
 
-    for (var i = 0; i < users.length; i++) {
-        if (users[i]['username'] == username) {
-            exists = true;
+    var request = new XMLHttpRequest();
+
+    request.open('GET', '/users/' + username, false);
+    request.onreadystatechange = function() {
+        if(request.readyState == XMLHttpRequest.DONE) {
+            user_exists = request.responseText == 'True'
         }
     }
+    request.send()
 
-    if (exists || username == '' || username.length > 16) {
+    if (user_exists || self.username == '' || self.username.length > 16) {
         showCross(user_check)
         validUser = false
     }
@@ -42,6 +47,7 @@ function verifyUsername(users) {
         showCheck(user_check)
         validUser = true
     }
+
     canRegister()
 }
 
@@ -109,9 +115,26 @@ function canRegister() {
 }
 
 function register() {
+    document.getElementById('register').classList.add('is-loading')
+
     var username = document.getElementById('username').value
     var public_name = document.getElementById('public_name').value
     var password = document.getElementById('password').value
 
-    
+    var hash = CryptoJS.SHA256(CryptoJS.SHA256(password));
+    console.log(hash)
+
+    var data = "username=" + username + "&public_name=" + public_name + "&password=" + hash;
+
+    var request = new XMLHttpRequest();
+    request.open('POST', '/register', true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    request.onreadystatechange = function() {
+        if(request.readyState == XMLHttpRequest.DONE && request.status == 200) {
+            window.location.replace('/login?newly_registered=True')
+        }
+    }
+
+    request.send(data);
 }
