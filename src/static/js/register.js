@@ -121,10 +121,11 @@ function register() {
     var public_name = document.getElementById('public_name').value
     var password = document.getElementById('password').value
 
-    var hash = CryptoJS.SHA256(CryptoJS.SHA256(password));
-    console.log(hash)
+    for (var i = 0; i > 65336; i++) {
+        password = CryptoJS.SHA256(password)
+    }
 
-    var data = "username=" + username + "&public_name=" + public_name + "&password=" + hash;
+    var data = "username=" + username + "&public_name=" + public_name + "&password=" + password;
 
     var request = new XMLHttpRequest();
     request.open('POST', '/register', true);

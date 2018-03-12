@@ -49,7 +49,7 @@ def login():
     if request.method == 'POST':
         data = request.form
         username = data['username']
-        password = hashlib.pbkdf2_hmac('sha256', data['password'].encode(), salt.encode(), 100000)
+        password = hashlib.pbkdf2_hmac('sha256', data['password'].encode(), salt.encode(), 65336)
         password = str(binascii.hexlify(password))[2:-1]
         print('Received password: ', password)
         for user in users:
@@ -57,7 +57,7 @@ def login():
                 print('Found username')
                 if user['password'] == password:
                     print('Found password')
-                    view = redirect('/?new_login="True"&babbler=' + username)
+                    view = redirect('/?new_login=True&babbler=' + username)
     return view
 
 
@@ -66,7 +66,7 @@ def register():
     view = render_template('/partials/register.html')
     if request.method == 'POST':
         data = request.form
-        password = hashlib.pbkdf2_hmac('sha256', data['password'].encode(), salt.encode(), 100000)
+        password = hashlib.pbkdf2_hmac('sha256', data['password'].encode(), salt.encode(), 65336)
         password = str(binascii.hexlify(password))[2:-1]
         users.append({
             'username': data['username'],
