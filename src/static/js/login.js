@@ -17,8 +17,14 @@ function login() {
     request.open('POST', '/login', true);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.onreadystatechange = function() {
-        if(request.readyState == XMLHttpRequest.DONE && request.status == 200) {
-            window.location.replace('/?new_login=True&babbler=' + username)
+        if(request.readyState == XMLHttpRequest.DONE) {
+            var valid = request.responseText == 'True'
+            if (valid) {
+                window.location.replace('/?new_login=True&babbler=' + username)
+            }
+            else {
+                window.location.replace('/login?invalid=True')
+            }
         }
     }
     request.send(data);

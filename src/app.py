@@ -52,12 +52,12 @@ def login():
         password = hashlib.pbkdf2_hmac('sha256', data['password'].encode(), salt.encode(), 65336)
         password = str(binascii.hexlify(password))[2:-1]
         print('Received password: ', password)
-        for user in users:
+        for user in users:  # TODO: Search DB for user and pw
             if user['username'] == username:
                 print('Found username')
                 if user['password'] == password:
                     print('Found password')
-                    view = redirect('/?new_login=True&babbler=' + username)
+                    return 'True'
     return view
 
 

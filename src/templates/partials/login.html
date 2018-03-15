@@ -22,12 +22,12 @@
                     <div class="control">
                         <input id="username" class="input is-primary is-medium spaced" type="text" placeholder="Username">
                         <input id="password" class="input is-primary is-medium spaced" type="password" placeholder="Password">
+                        {% if invalid %}
+                            <p class="subtitle is-5 has-text-danger has-text-centered spaced">Invalid user or password</p>
+                        {% endif %}
                         <div class="level">
                             <div class="level-item has-text-centered">
-                                <button id="login" onclick="login()" class="button is-primary is-spaced" type="submit">Login</button>
-                            {% if invalid %}
-                                <p class="subtitle is-5 has-text-danger has-text-centered">Invalid user or password</p>
-                            {% endif %}
+                                <button id="login" onclick="login()" class="button is-primary spaced" type="submit">Login</button>
                             </div>
                         </div>
                     </div>
