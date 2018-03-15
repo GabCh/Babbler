@@ -37,41 +37,49 @@
                 </div>
                 </div>
                 <div class="navbar-end">
-                    {% if not session.logged_in %}
-                        <div class="navbar-item">
-                            <a class="button is-info is-rounded" href="/login">
-                                <span class="icon">
-                                    <i class="fas fa-user"></i>
-                                </span>
-                                <span>Login</span>
-                            </a>
-                        </div>
-                        <div class="navbar-item">
-                            <a class="button is-info is-rounded" href="/register">
-                                <span class="icon">
-                                    <i class="fas fa-user-plus"></i>
-                                </span>
-                                <span>Register</span>
-                            </a>
-                        </div>
-                    {% else %}
-                        <div class="navbar-item">
-                            <a class="button is-info is-inverted is-rounded" href="/newbabble">
-                                <span class="icon">
-                                    <i class="fas fa-plus"></i>
-                                </span>
-                                <span>New Babble</span>
-                            </a>
-                        </div>
-                        <div class="navbar-item">
-                            <a class="button is-info is-inverted is-rounded" href="/myprofile">
-                                <span class="icon">
-                                    <i class="fas fa-child"></i>
-                                </span>
-                                <span>My profile</span>
-                            </a>
-                        </div>
-                    {% endif %}
+                {% if not logged %}
+                    <div class="navbar-item">
+                        <a class="button is-info is-rounded" href="/login">
+                            <span class="icon">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <span>Login</span>
+                        </a>
+                    </div>
+                    <div class="navbar-item">
+                        <a class="button is-info is-rounded" href="/register">
+                            <span class="icon">
+                                <i class="fas fa-user-plus"></i>
+                            </span>
+                            <span>Register</span>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="navbar-item">
+                        <a class="button is-info is-inverted is-rounded" href="/newbabble">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span>New Babble</span>
+                        </a>
+                    </div>
+                    <div class="navbar-item">
+                        <a class="button is-info is-inverted is-rounded" href="/myprofile">
+                            <span class="icon">
+                                <i class="fas fa-child"></i>
+                            </span>
+                            <span>My profile</span>
+                        </a>
+                    </div>
+                    <div class="navbar-item">
+                        <a class="button is-danger is-rounded" href="/logout">
+                            <span>Logout</span>
+                            <span class="icon">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </span>
+                        </a>
+                    </div>
+                {% endif %}
                 </div>
             </div>
         </nav>

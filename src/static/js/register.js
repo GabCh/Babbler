@@ -31,7 +31,7 @@ function verifyUsername() {
 
     showSpinner(user_check);
 
-    if(changeTimer !== false) clearTimeout(changeTimer);
+    if(changeTimer) clearTimeout(changeTimer);
         changeTimer = setTimeout(function() {
             var request = new XMLHttpRequest();
             request.open('GET', '/users/' + username, true);
@@ -39,7 +39,7 @@ function verifyUsername() {
                 if(request.readyState == XMLHttpRequest.DONE) {
                     var user_check = document.getElementById('user_check');
                     var exists = request.responseText == 'True'
-                    if (exists || username == '' || username.length > 16) {
+                    if (exists || username == '' || username.length > 16 || username.includes(' ')) {
                         console.log(exists)
                         showCross(user_check)
                         validUser = false
