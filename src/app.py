@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'choupi'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'minecraft371'
 app.config['MYSQL_DATABASE_DB'] = 'Babbler'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
@@ -94,6 +94,7 @@ def my_profile():
         return render_template('myprofile.html')
     else:
         return redirect(url_for('/login'))
+
 
 @app.route('/myfeed')
 def feed():
