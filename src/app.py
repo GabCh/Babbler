@@ -96,6 +96,27 @@ def my_profile():
     else:
         return redirect(url_for('/login'))
 
+@app.route('/myfeed')
+def feed():
+    posts = [
+        {
+            "user": "Jannik",
+            "time": "16h50",
+            "message": "Salut tout le monde! :)"
+        },
+        {
+            "user": "Choupi",
+            "time": "16h25",
+            "message": "Pour vrai tyl"
+        },
+        {
+            "user": "Gabriel",
+            "time": "16h21",
+            "message": "420 Blaze it !!!!!"
+        }
+    ]
+    return render_template('partials/feed.html', cards=posts)
+
 
 @app.route('/babblers/<username>')
 def babbler_profile(username):
