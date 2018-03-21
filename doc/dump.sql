@@ -1,4 +1,5 @@
 USE Babbler;
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 
 CREATE TABLE IF NOT EXISTS Babblers(username char(12), 
 					  publicName char(24), 

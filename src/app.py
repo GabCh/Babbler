@@ -8,10 +8,10 @@ from data.babblerdb import BabblerDB
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'minecraft371'
-app.config['MYSQL_DATABASE_DB'] = 'Babbler'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['DB_HOST'] = 'localhost'
+app.config['DB_USER'] = 'root'
+app.config['DB_PASSWORD'] = ''
+app.config['DB_NAME'] = 'Babbler'
 
 
 #  temp until DB is setup
@@ -26,8 +26,8 @@ users = [
 salt = 'BabblerDefaultSalt'
 
 db = BabblerDB(app)
-BABBLES_TABLE = 'babbles'
-BABBLERS_TABLE = 'babblers'
+BABBLES_TABLE = 'Babbles'
+BABBLERS_TABLE = 'Babblers'
 
 
 @app.route('/')

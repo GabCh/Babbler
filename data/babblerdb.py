@@ -1,29 +1,15 @@
-from flaskext.mysql import MySQL
-import json
+import pymysql.cursors
 
 
 class BabblerDB(object):
 
     def __init__(self, app):
-        self.mysql = MySQL()
-        self.mysql.init_app(app)
-        self.connection = self.mysql.connect()
-        self.cursor = self.connection.cursor()
-        sql = list()
-        sql.append("USE Babbler;")
-        query = "".join(sql)
-        self.connection.cursor().execute(query)
-
-    def create_table_babblers(self):
-        sql = """
-            CREATE TABLE babblers (
-            Username VARCHAR(16) PRIMARY KEY,
-            PublicName VARCHAR(16),
-            Password VARCHAR(32)
-            );
-        """
-        self.cursor.execute(sql)
-        print('Created babblers table!')
+        self.connection = pymysql.connect(host=app.config['DB_HOST'],
+                                          user=app.config['DB_USER'],
+                                          password=app.config['DB_PASSWORD'],
+                                          db=app.config['DB_NAME'],
+                                          charset='utf8mb4',
+                                          cursorclass=pymysql.cursors.DictCursor)
 
     def add_babbler(self, username, public_name, password):
         sql = """
@@ -33,17 +19,18 @@ class BabblerDB(object):
         print('Inserted ' + username + ' into table babblers!')
 
     def read_table(self, table, keyword, attribute):
-        sql = list()
-        sql.append("SELECT * FROM %s " % table)
-        sql.append("WHERE %s LIKE '%%%s%%'" % (attribute, keyword))
-        sql.append(";")
-        query = "".join(sql)
-        cur = self.connection.cursor()
-        cur.execute(query)
-        data = cur.fetchall()
-        return self.make_json_for_tuple(data)
+        try:
 
-
+            with self.connection.cursor() as cursor:
+                # Read a single record
+                sql = "SELECT * FROM %s WHERE %s LIKE '%%%s%%'"
+                cursor.execute(sql, (table, attribute, keyword,))
+                result = cursor.fetchall()
+                print(result)
+                return self.make_json_for_tuple(result)
+        finally:
+            self.connection.close()
+        
     @staticmethod
     def make_json_for_tuple(data): # TODO: faire qu'elle fonctionne pour n'importe quelle table
         json = dict()
