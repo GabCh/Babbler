@@ -42,8 +42,7 @@ def search_form():
     keyword = request.args.get('keyword')
     if keyword:
         babbles = db.read_table(BABBLES_TABLE, keyword, 'message')
-        babblers = db.read_table(BABBLERS_TABLE, keyword, 'PublicName')
-        return render_template('/partials/search_results.html', keyword=keyword, babbles=babbles, babblers=babblers)
+        return render_template('/partials/search_results.html', keyword=keyword, babbles=babbles)
     else:
         return render_template('index.html')
 
@@ -98,27 +97,8 @@ def my_profile():
 
 @app.route('/myfeed')
 def feed():
-    posts = [
-        {
-            "user": "Jannik",
-            "time": "16h50",
-            "message": "Salut tout le monde! :)",
-            "tags": ["happy", "morning"]
-        },
-        {
-            "user": "Choupi",
-            "time": "16h25",
-            "message": "Pour vrai tyl",
-            "tags" : []
-        },
-        {
-            "user": "Gabriel",
-            "time": "16h21",
-            "message": "!!!!!",
-            "tags": ["Bring", "me", "food"]
-        }
-    ]
-    return render_template('partials/feed.html', cards=posts)
+    babbles = db.get_babbles_from_followed_babblers()
+    return render_template('partials/feed.html', babbles=babbles)
 
 
 @app.route('/babblers/<username>')

@@ -2,42 +2,8 @@
 
 {% block body %}
     <div class="box">
-    {% for C in cards %}
-        <div class="columns is-centered">
-            <div class="column is-7">
-                <div class="card">
-                    <header class="card-header">
-                        <div class="tags has-addons">
-                            <span class="tag is-primary">
-                                <i class="fas fa-user"></i>
-                                <h1><b>{{C.user}}</b></h1>
-                            </span>
-                            <span class="tag is-light">
-                                <p><i>{{C.time}}</i></p>
-                            </span>
-                        </div>
-                    </header>
-                    <div class="card-content">
-                        <div class="level">
-                            <div class="content">
-                                <p class="is-spaced">{{C.message}}</p>
-                            </div>
-                        </div>
-                        <div class="level">
-                            <div class="level-left">
-                                <div class="tags">
-                                    {% for T in C.tags %}
-                                    <div class="tag is-info">
-                                        {{T}}
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    {% for B in babbles %}
+
     {% endfor %}
     </div>
 {% endblock %}
