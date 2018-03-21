@@ -97,7 +97,7 @@ def my_profile():
 
 @app.route('/myfeed')
 def feed():
-    babbles = db.get_babbles_from_followed_babblers()
+    babbles = db.get_babbles_from_followed_babblers('Jannik')
     return render_template('partials/feed.html', babbles=babbles)
 
 

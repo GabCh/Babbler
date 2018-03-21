@@ -79,12 +79,13 @@ class BabblerDB(object):
                 sql = """
                     SELECT B.username, B.message, B.time_s
                     FROM Babbles B, Follows F
-                    WHERE F.follower = %s AND F.followed = B.username
+                    WHERE F.follower LIKE %s AND F.followed = B.username
                     GROUP BY B.time_s DESC;"""
                 cursor.execute(sql, (username,))
                 results = cursor.fetchall()
                 for result in results:
-                    result['time_s'] = "{:%d %b %Y}".format(result['time_s'])
+                    result['time_s'] = "{}".format(result['time_s'])
+                    result['ellapsed'] = get_elapsed_time(result['time_s'])
                 return results
         except Exception as e:
             print(e)
