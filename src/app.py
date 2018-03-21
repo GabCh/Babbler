@@ -8,12 +8,11 @@ from data.babblerdb import BabblerDB
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-app.config.update(dict(
-    DATABASE_URI='mysql://root@localhost/Babbler',
-    SECRET_KEY='dev key (change later)',
-    USERNAME='admin',
-    PASSWORD='NodesBand420!'
-))
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'choupi'
+app.config['MYSQL_DATABASE_DB'] = 'Babbler'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+
 
 #  temp until DB is setup
 users = [
@@ -102,17 +101,20 @@ def feed():
         {
             "user": "Jannik",
             "time": "16h50",
-            "message": "Salut tout le monde! :)"
+            "message": "Salut tout le monde! :)",
+            "tags": ["happy", "morning"]
         },
         {
             "user": "Choupi",
             "time": "16h25",
-            "message": "Pour vrai tyl"
+            "message": "Pour vrai tyl",
+            "tags" : []
         },
         {
             "user": "Gabriel",
             "time": "16h21",
-            "message": "420 Blaze it !!!!!"
+            "message": "!!!!!",
+            "tags": ["Bring", "me", "food"]
         }
     ]
     return render_template('partials/feed.html', cards=posts)

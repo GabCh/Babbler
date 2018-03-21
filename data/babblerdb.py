@@ -43,6 +43,7 @@ class BabblerDB(object):
         data = cur.fetchall()
         return self.make_json_for_tuple(data)
 
+
     @staticmethod
     def make_json_for_tuple(data): # TODO: faire qu'elle fonctionne pour n'importe quelle table
         json = dict()
