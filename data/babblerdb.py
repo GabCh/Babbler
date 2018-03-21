@@ -1,4 +1,5 @@
 import pymysql.cursors
+from data.utils import get_elapsed_time
 
 
 class BabblerDB(object):
@@ -61,11 +62,11 @@ class BabblerDB(object):
             with self.connection.cursor() as cursor:
                 # Read a single record
                 sql = "SELECT username, message, time_s FROM {} WHERE {} LIKE %s".format(table, attribute)
-                print(sql)
                 cursor.execute(sql, (keyword,))
                 results = cursor.fetchall()
                 for result in results:
-                    result['time_s'] = "{:%d %b %Y}".format(result['time_s'])
+                    result['time_s'] = "{}".format(result['time_s'])
+                    result['ellapsed'] = get_elapsed_time(result['time_s'])
                 return results
         except Exception as e:
             print(e)
