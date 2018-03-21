@@ -1,5 +1,5 @@
 import pymysql.cursors
-from data.utils import get_elapsed_time
+from data.utils import get_elapsed_time, get_total_seconds
 
 
 class BabblerDB(object):
@@ -19,17 +19,31 @@ class BabblerDB(object):
         self.cursor.execute(sql)
         print('Inserted ' + username + ' into table babblers!')
 
-    def read_table(self, table, keyword, attribute):
+    def read_babbles(self, keyword):
         try:
             keyword = '%' + keyword + '%'
             with self.connection.cursor() as cursor:
-                # Read a single record
-                sql = "SELECT username, message, time_s FROM {} WHERE {} LIKE %s".format(table, attribute)
+                sql = "SELECT username, message, time_s FROM Babbles WHERE message LIKE %s"
                 cursor.execute(sql, (keyword,))
                 results = cursor.fetchall()
                 for result in results:
                     result['time_s'] = "{}".format(result['time_s'])
-                    result['ellapsed'] = get_elapsed_time(result['time_s'])
+                    elapsed = get_elapsed_time(result['time_s'])
+                    seconds = get_total_seconds(result['time_s'])
+                    result['ellapsed'] = elapsed
+                    result['seconds'] = seconds
+                chrono = sorted(results, key=lambda k: k['seconds'])
+                return chrono
+        except Exception as e:
+            print(e)
+
+    def read_babblers(self, username):
+        try:
+            keyword = '%' + username + '%'
+            with self.connection.cursor() as cursor:
+                sql = "SELECT username, publicName FROM Babblers WHERE username LIKE %s"
+                cursor.execute(sql, (keyword,))
+                results = cursor.fetchall()
                 return results
         except Exception as e:
             print(e)

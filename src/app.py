@@ -26,8 +26,6 @@ users = [
 salt = 'BabblerDefaultSalt'
 
 db = BabblerDB(app)
-BABBLES_TABLE = 'Babbles'
-BABBLERS_TABLE = 'Babblers'
 
 
 @app.route('/')
@@ -41,8 +39,9 @@ def main():
 def search_form():
     keyword = request.args.get('keyword')
     if keyword:
-        babbles = db.read_table(BABBLES_TABLE, keyword, 'message')
-        return render_template('/partials/search_results.html', keyword=keyword, babbles=babbles)
+        babbles = db.read_babbles(keyword)
+        babblers = db.read_babblers(keyword)
+        return render_template('/partials/search_results.html', keyword=keyword, babbles=babbles, babblers=babblers)
     else:
         return render_template('index.html')
 
