@@ -96,27 +96,8 @@ def my_profile():
 
 @app.route('/myfeed')
 def feed():
-    posts = [
-        {
-            "user": "Jannik",
-            "time": "16h50",
-            "message": "Salut tout le monde! :)",
-            "tags": ["happy", "morning"]
-        },
-        {
-            "user": "Choupi",
-            "time": "16h25",
-            "message": "Pour vrai tyl",
-            "tags" : []
-        },
-        {
-            "user": "Gabriel",
-            "time": "16h21",
-            "message": "!!!!!",
-            "tags": ["Bring", "me", "food"]
-        }
-    ]
-    return render_template('partials/feed.html', cards=posts)
+    babbles = db.get_babbles_from_followed_babblers('GabCh')
+    return render_template('partials/feed.html', babbles=babbles)
 
 
 @app.route('/babblers/<username>')

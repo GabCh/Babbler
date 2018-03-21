@@ -55,11 +55,3 @@ def get_elapsed_time(date_str: str):
         ellapsed += str(minutes) + 'm '
 
     return ellapsed
-
-
-def get_total_seconds(date_str: str):
-    present = datetime.now()
-    post_date = datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
-    delta = present - post_date
-    seconds = delta.total_seconds()
-    return seconds
