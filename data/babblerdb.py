@@ -20,27 +20,21 @@ class BabblerDB(object):
 
     def read_table(self, table, keyword, attribute):
         try:
-
+            keyword = '%' + keyword + '%'
             with self.connection.cursor() as cursor:
                 # Read a single record
-                sql = "SELECT * FROM %s WHERE %s LIKE '%%%s%%'"
-                cursor.execute(sql, (table, attribute, keyword,))
-                result = cursor.fetchall()
-                print(result)
-                return self.make_json_for_tuple(result)
+                sql = "SELECT username, message, time_s FROM {} WHERE {} LIKE %s".format(table, attribute)
+                print(sql)
+                cursor.execute(sql, (keyword,))
+                results = cursor.fetchall()
+                for result in results:
+                    result['time_s'] = "{:%d %b %Y}".format(result['time_s'])
+                return results
+        except Exception as e:
+            print(e)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        try:
+            self.connection.commit()
         finally:
             self.connection.close()
-        
-    @staticmethod
-    def make_json_for_tuple(data): # TODO: faire qu'elle fonctionne pour n'importe quelle table
-        json = dict()
-        json['babbles'] = []
-        for tuple in data:
-            babble = dict()
-            babble['id'] = tuple[0]
-            babble['pseudo'] = tuple[1]
-            babble['message'] = tuple[2]
-            babble['time_s'] = tuple[3]
-            babble['tags'] = tuple[4]
-            json['babbles'].append(babble)
-        return json

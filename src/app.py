@@ -42,8 +42,7 @@ def search_form():
     keyword = request.args.get('keyword')
     if keyword:
         babbles = db.read_table(BABBLES_TABLE, keyword, 'message')
-        babblers = db.read_table(BABBLERS_TABLE, keyword, 'PublicName')
-        return render_template('/partials/search_results.html', keyword=keyword, babbles=babbles, babblers=babblers)
+        return render_template('/partials/search_results.html', keyword=keyword, babbles=babbles)
     else:
         return render_template('index.html')
 
