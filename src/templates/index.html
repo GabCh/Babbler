@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
-<div>
-    WELCOME MOTHERFUCKERS
+<div class="section">
+    {% if new_login %}
+        <p class="title is-2 is-spaced">Welcome, {{ babbler }}!</p>
+        <p class="subtitle is-4">Long time no see!</p>
+    {% endif %}
 </div>
 {% endblock %}

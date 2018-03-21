@@ -1,3 +1,7 @@
+.wide-inputs {
+    width: 60%;
+}
+
 .spin {
     -webkit-animation-name: spin;
     -webkit-animation-duration: 750ms;

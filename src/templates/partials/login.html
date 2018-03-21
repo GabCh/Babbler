@@ -1,13 +1,20 @@
 {% extends 'layout.html' %}
 
 {% block head %}
-<script src="{{ url_for('static', filename='js/login.js') }}" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/sha256.js" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='js/login.js') }}" type="text/javascript"></script>
 {% endblock %}
 
 {% block body %}
 <div class="section">
+    {% if newly_registered %}
+    <p class="title is-2 is-spaced">Registration complete!</p>
+    <p class="subtitle is-4">Login to continue</p>
+    {% else %}
     <p class="title is-2 is-spaced">Login</p>
     <p class="subtitle is-4">Existing user</p>
+    {% endif %}
+
     <div class="box">
         <div class="level">
             <div class="level-item has-text-centered">
@@ -15,9 +22,12 @@
                     <div class="control">
                         <input id="username" class="input is-primary is-medium spaced" type="text" placeholder="Username">
                         <input id="password" class="input is-primary is-medium spaced" type="password" placeholder="Password">
+                        {% if invalid %}
+                            <p class="subtitle is-5 has-text-danger has-text-centered spaced">Invalid user or password</p>
+                        {% endif %}
                         <div class="level">
                             <div class="level-item has-text-centered">
-                                <button class="button is-info is-spaced" type="submit">Login</button>
+                                <button id="login" onclick="login()" class="button is-primary spaced" type="submit">Login</button>
                             </div>
                         </div>
                     </div>
