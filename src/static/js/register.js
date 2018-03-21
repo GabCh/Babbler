@@ -2,14 +2,18 @@ var validUser = false
 var validPublic = false
 var validPass = false
 var validPass2 = false
+var changeTimer = false;
+
 
 function showCross(icon) {
+    console.log('Show cross, icon = ' + icon)
     icon.classList.add('fa-times-circle', 'has-text-danger')
     icon.classList.remove('fa-check-circle', 'has-text-success', 'fa-spinner', 'spin')
     icon.style.display = 'block'
 }
 
 function showCheck(icon) {
+    console.log('Show check, icon = ' + icon)
     icon.classList.add('fa-check-circle', 'has-text-success')
     icon.classList.remove('fa-times-circle', 'has-text-danger', 'fa-spinner', 'spin')
     icon.style.display = 'block'
@@ -21,28 +25,38 @@ function showSpinner(icon) {
     icon.style.display = 'block'
 }
 
-function verifyUsername(users) {
-    var username = document.getElementById('username').value
-    var user_check = document.getElementById('user_check')
-    var exists = false;
+function verifyUsername() {
+    var username = document.getElementById('username').value;
+    var user_check = document.getElementById('user_check');
 
     showSpinner(user_check);
 
-    for (var i = 0; i < users.length; i++) {
-        if (users[i]['username'] == username) {
-            exists = true;
-        }
-    }
+    if(changeTimer !== false) clearTimeout(changeTimer);
+        changeTimer = setTimeout(function() {
+            var request = new XMLHttpRequest();
+            request.open('GET', '/users/' + username, true);
+            request.onreadystatechange = function() {
+                if(request.readyState == XMLHttpRequest.DONE) {
+                    var user_check = document.getElementById('user_check');
+                    var exists = request.responseText == 'True'
+                    if (exists || username == '' || username.length > 16) {
+                        console.log(exists)
+                        showCross(user_check)
+                        validUser = false
+                    }
+                    else {
+                        console.log(exists)
+                        showCheck(user_check)
+                        validUser = true
+                    }
+                    canRegister()
+                }
+            }
+            request.send()
+            changeTimer = false;
+        },300);
 
-    if (exists || username == '' || username.length > 16) {
-        showCross(user_check)
-        validUser = false
-    }
-    else {
-        showCheck(user_check)
-        validUser = true
-    }
-    canRegister()
+
 }
 
 function verifyPublicName() {
@@ -109,9 +123,27 @@ function canRegister() {
 }
 
 function register() {
+    document.getElementById('register').classList.add('is-loading')
+
     var username = document.getElementById('username').value
     var public_name = document.getElementById('public_name').value
     var password = document.getElementById('password').value
 
-    
+    for (var i = 0; i > 65336; i++) {
+        password = CryptoJS.SHA256(password)
+    }
+
+    var data = "username=" + username + "&public_name=" + public_name + "&password=" + password;
+
+    var request = new XMLHttpRequest();
+    request.open('POST', '/register', true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    request.onreadystatechange = function() {
+        if(request.readyState == XMLHttpRequest.DONE && request.status == 200) {
+            window.location.replace('/login?newly_registered=True')
+        }
+    }
+
+    request.send(data);
 }
