@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS Follows(follower char(12),
 
 INSERT INTO Babblers VALUES ('GabCh', 'Gabriel Chantal', '3c47979469a88dab6244d218a7b5555681f5098cd0eb4853d1b8966103107f43');
 INSERT INTO Babblers VALUES ('Jannik', 'Jannik Lévesque', '3bb3404dad8a122929562e71ac56f5ddd9f189df7b5283dbbdac27504875194c');
-INSERT INTO Babblers VALUES ('Gabla', 'Gabriel Laliberté', NULL);
+INSERT INTO Babblers VALUES ('gablab', 'Gabriel Laliberté', '69273868226b6eadd48685b28d69bb45bc907df6a2a8b373bff1f2155b541b9d');
 
 
 INSERT INTO Babbles VALUES (1, 'Jannik', 'In et ora pascebantur praetenturis igitur provincialium praetenturis et se contulerunt in opibus ibique opibus Lycaoniam maritima et se in in mox inveniretur itinera praetenturis praetenturis relicta opibus Isauriae adventicium contulerunt cum cum mox maritima provincialium in ora ora intersaepientes et Isauriae adnexam adventicium relicta in itinera relicta opibus relicta.', 
