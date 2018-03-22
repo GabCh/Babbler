@@ -1,17 +1,68 @@
 {% extends "layout.html" %}
-{% block content %}
-<form action="/search" method="GET">
-    {% if keyword %}
-        <input type="text" value="{{ keyword }}" name="keyword"><button>Go</button>
-    {% else %}
-        <input type="text" value="{{ keyword }}" name="keyword"><button>Go</button>
-    {% endif %}
-</form>
-<div>
-    {% if keyword %}
-        <h1>{{ keyword }}</h1>
-    {% else %}
-        <h1>placeholder</h1>
-    {% endif %}
+
+{% block head %}
+    <script src="{{ url_for('static', filename='js/utils.js') }}" type="text/javascript"></script>
+{% endblock %}
+
+{% block body %}
+<div class="section">
+    <p class="title is-2 is-spaced">Babbles results for : {{ keyword }}</p>
+    {% for babble in babbles %}
+    <div class="box">
+      <article class="media">
+        <div class="media-left">
+          <figure class="image is-64x64">
+            <img src="https://bulma.io/images/placeholders/128x128.png" alt="Image">
+          </figure>
+        </div>
+        <div class="media-content">
+          <div class="content">
+              <p>
+                <strong>@{{ babble.username }}</strong> <small>{{ babble.ellapsed }} ago</small>
+              <br>
+              {{ babble.message }}
+            </p>
+          </div>
+          <nav class="level is-mobile">
+            <div class="level-left">
+              <a class="level-item">
+                <span class="icon is-small"><i class="fas fa-reply"></i></span>
+              </a>
+              <a class="level-item">
+                <span class="icon is-small"><i class="fas fa-heart"></i></span>
+              </a>
+            </div>
+          </nav>
+        </div>
+      </article>
+    </div>
+    {% endfor %}
+    <p class="title is-2 is-spaced">Babblers results for : {{ keyword }}</p>
+    <div class="columns">
+        {% for babbler in babblers %}
+        <div class="column">
+            <div class="card">
+              <div class="card-image">
+                <figure class="image is-4by3">
+                  <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
+                </figure>
+              </div>
+              <div class="card-content">
+                <div class="media">
+                  <div class="media-left">
+                    <figure class="image is-48x48">
+                      <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                    </figure>
+                  </div>
+                  <div class="content">
+                    <p class="title is-4">{{ babbler.publicName }}</p>
+                    <p class="subtitle is-6">@{{ babbler.username }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

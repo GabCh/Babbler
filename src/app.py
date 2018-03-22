@@ -1,17 +1,18 @@
-import os
 import hashlib
 import binascii
+
 from flask import Flask, render_template, request, session, url_for, redirect
+from data.babblerdb import BabblerDB
+
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'babbler.db'),
-    SECRET_KEY='dev key (change later)',
-    USERNAME='admin',
-    PASSWORD='NodesBand420!'
-))
+app.config['DB_HOST'] = 'localhost'
+app.config['DB_USER'] = 'root'
+app.config['DB_PASSWORD'] = ''
+app.config['DB_NAME'] = 'Babbler'
+
 
 #  temp until DB is setup
 users = [
@@ -23,6 +24,8 @@ users = [
 ]
 #  Hashing salt
 salt = 'BabblerDefaultSalt'
+
+db = BabblerDB(app)
 
 
 @app.route('/')
@@ -36,7 +39,9 @@ def main():
 def search_form():
     keyword = request.args.get('keyword')
     if keyword:
-        return render_template('/partials/search_results.html', keyword=keyword)
+        babbles = db.read_babbles(keyword)
+        babblers = db.read_babblers(keyword)
+        return render_template('/partials/search_results.html', keyword=keyword, babbles=babbles, babblers=babblers)
     else:
         return render_template('index.html')
 
@@ -87,6 +92,12 @@ def my_profile():
         return render_template('myprofile.html')
     else:
         return redirect(url_for('/login'))
+
+
+@app.route('/myfeed')
+def feed():
+    babbles = db.get_babbles_from_followed_babblers('GabCh')
+    return render_template('partials/feed.html', babbles=babbles)
 
 
 @app.route('/babblers/<username>')

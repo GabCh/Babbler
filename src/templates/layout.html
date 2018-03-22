@@ -25,7 +25,7 @@
                     <div class="navbar-item">
                     <form action="/search" method="GET" id="search-form">
                         <div class="field is-grouped">
-                            <input style="margin-right:20px;" type="text" name="keyword">
+                            <input style="margin-right:20px;" type="text" value="{{ keyword }}" name="keyword">
                             <a class="button is-info is-rounded is-inverted" href="javascript:{}" onclick="document.getElementById('search-form').submit();">
                                 <span>Go</span>
                                 <span class="icon">
