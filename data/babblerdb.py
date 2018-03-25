@@ -55,11 +55,11 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
-    def read_babbles(self, keyword):
+    def read_babbles(self, keyword: str):
         try:
             keyword = '%' + keyword + '%'
             with self.connection.cursor() as cursor:
-                sql = "SELECT username, message, time_s FROM Babbles WHERE message LIKE %s" \
+                sql = "SELECT id, username, message, time_s FROM Babbles WHERE message LIKE %s" \
                       "GROUP BY Babbles.time_s DESC;"
                 cursor.execute(sql, (keyword,))
                 results = cursor.fetchall()
@@ -67,11 +67,39 @@ class BabblerDB(object):
                     result['time_s'] = "{}".format(result['time_s'])
                     elapsed = get_elapsed_time(result['time_s'])
                     result['ellapsed'] = elapsed
+                    result['tags'] = self.read_tags(result['id'])
                 return results
         except Exception as e:
             print(e)
 
-    def read_babblers(self, username):
+    def read_babbles_with_tag(self, tag: str):
+        try:
+            with self.connection.cursor() as cursor:
+                sql = "SELECT id, username, message, time_s "\
+                      "FROM Babbles WHERE id IN (SELECT id FROM Tag WHERE tag = %s)" \
+                      "GROUP BY Babbles.time_s DESC;"
+                cursor.execute(sql, (tag,))
+                results = cursor.fetchall()
+                for result in results:
+                    result['time_s'] = "{}".format(result['time_s'])
+                    elapsed = get_elapsed_time(result['time_s'])
+                    result['ellapsed'] = elapsed
+                    result['tags'] = self.read_tags(result['id'])
+                return results
+        except Exception as e:
+            print(e)
+
+    def read_tags(self, babble_id: int):
+        try:
+            with self.connection.cursor() as cursor:
+                sql = "SELECT DISTINCT tag FROM Tag WHERE id = %s"
+                cursor.execute(sql, (babble_id,))
+                results = cursor.fetchall()
+                return results
+        except Exception as e:
+            print(e)
+
+    def read_babblers(self, username: str):
         try:
             keyword = '%' + username + '%'
             with self.connection.cursor() as cursor:

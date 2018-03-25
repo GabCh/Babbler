@@ -109,6 +109,13 @@ def babbler_profile(username):
     return view
 
 
+@app.route('/tag/<tag>')
+def tag_page(tag):
+    babbles = db.read_babbles_with_tag(tag)
+    view = render_template('/partials/tag_results.html', babbles=babbles, tag=tag)
+    return view
+
+
 @app.route('/users/<username>', methods=['GET'])
 def get_user(username):
     exists = False
