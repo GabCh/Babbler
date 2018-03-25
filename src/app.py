@@ -23,16 +23,18 @@ users = [
     }
 ]
 #  Hashing salt
-salt = 'BabblerDefaultSalt'
+salt = '1WZZhonPwvMWzu3pU5J+4fp1d9SCHYi3qQ4QpxTvznatMsSzl4iOKCtF++vBJ+ZQPOXCDIs0ipiaPAlEI2RSGQ=='
 
 db = BabblerDB(app)
 
 
 @app.route('/')
 def main():
+    logged = 'username' in session
     return render_template('index.html',
                            new_login=request.args.get('new_login'),
-                           babbler=request.args.get('babbler'))
+                           babbler=request.args.get('babbler'),
+                           logged=logged)
 
 
 @app.route('/search')
@@ -56,12 +58,11 @@ def login():
         username = data['username']
         password = hashlib.pbkdf2_hmac('sha256', data['password'].encode(), salt.encode(), 65336)
         password = str(binascii.hexlify(password))[2:-1]
-        print('Received password: ', password)
+
         for user in users:  # TODO: Search DB for user and pw
             if user['username'] == username:
-                print('Found username')
                 if user['password'] == password:
-                    print('Found password')
+                    session['username'] = username
                     return 'True'
     return view
 
@@ -73,17 +74,19 @@ def register():
         data = request.form
         password = hashlib.pbkdf2_hmac('sha256', data['password'].encode(), salt.encode(), 65336)
         password = str(binascii.hexlify(password))[2:-1]
-        users.append({
+
+        users.append({  # TODO: Add user to DB instead of locally
             'username': data['username'],
             'public_name': data['public_name'],
             'password': password
         })
-        print('Registered password: ', password)
-        #  TODO: Add user to DB instead of locally
+    return view
 
-        return view
-    else:
-        return view
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect('/')
 
 
 @app.route('/myprofile')
