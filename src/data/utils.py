@@ -13,45 +13,47 @@ def get_elapsed_time(date_str: str):
     post_date = datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
     delta = present - post_date
     seconds = delta.total_seconds()
-    ellapsed = ''
+    elapsed = ''
 
     years = int(seconds / YEARS)
     seconds -= (years * YEARS)
     if years:
         if years > 1:
-            ellapsed += str(years) + 'yrs '
+            elapsed += str(years) + 'yrs '
         else:
-            ellapsed += str(years) + 'yr '
+            elapsed += str(years) + 'yr '
 
     months = int(seconds / MONTHS)
     seconds -= (months * MONTHS)
     if months:
         if months > 1:
-            ellapsed += str(months) + ' months '
+            elapsed += str(months) + ' months '
         else:
-            ellapsed += str(months) + ' month '
-        return ellapsed
+            elapsed += str(months) + ' month '
+        return elapsed
 
     weeks = int(seconds / WEEKS)
     seconds -= (weeks * WEEKS)
     if weeks:
-        ellapsed += str(weeks) + 'w '
-        return ellapsed
+        elapsed += str(weeks) + 'w '
+        return elapsed
 
     days = int(seconds / DAYS)
     seconds -= (days * DAYS)
     if days:
-        ellapsed += str(days) + 'd '
-        return ellapsed
+        elapsed += str(days) + 'd '
+        return elapsed
 
     hours = int(seconds / HOURS)
     seconds -= (hours * HOURS)
     if hours:
-        ellapsed += str(hours) + 'h '
+        elapsed += str(hours) + 'h '
 
     minutes = int(seconds / MINUTES)
     seconds -= int(minutes * MINUTES)
     if minutes:
-        ellapsed += str(minutes) + 'm '
+        elapsed += str(minutes) + 'm '
+    else:
+        elapsed = 'a few seconds'
 
-    return ellapsed
+    return elapsed
