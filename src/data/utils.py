@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 
 YEARS = 31557600
 MONTHS = 2629800
@@ -57,3 +58,16 @@ def get_elapsed_time(date_str: str):
         elapsed = 'a few seconds'
 
     return elapsed
+
+
+def crop_tags_in_message(message: str):
+    regex = r"\B\#\w+"
+    matches = re.finditer(regex, message)
+    tags = []
+    for matchNb, match in enumerate(matches):
+        hashtag = match.group()
+        tag = hashtag.replace('#', '')
+        tags.append(tag)
+    message = re.sub(regex, '', message)
+    return tags, message
+

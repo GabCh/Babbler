@@ -65,7 +65,7 @@ class BabblerDB(object):
             username = '%' + username + '%'
             with self.connection.cursor() as cursor:
                 sql = """
-                    SELECT B.username, B.message, B.time_s
+                    SELECT B.id, B.username, B.message, B.time_s
                     FROM Babbles B, Follows F
                     WHERE F.follower LIKE %s AND F.followed = B.username
                     GROUP BY B.time_s DESC;"""
@@ -73,8 +73,19 @@ class BabblerDB(object):
                 results = cursor.fetchall()
                 for result in results:
                     result['time_s'] = "{}".format(result['time_s'])
-                    result['ellapsed'] = get_elapsed_time(result['time_s'])
+                    result['elapsed'] = get_elapsed_time(result['time_s'])
+                    result['tags'] = self.read_tags(result['id'])
                 return results
+        except Exception as e:
+            print(e)
+
+    def generate_babble_id(self):
+        sql = "SELECT MAX(id) AS max_id FROM Babbles"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql)
+                result = cursor.fetchone()
+                return result['max_id'] + 1
         except Exception as e:
             print(e)
 
@@ -89,7 +100,7 @@ class BabblerDB(object):
                 for result in results:
                     result['time_s'] = "{}".format(result['time_s'])
                     elapsed = get_elapsed_time(result['time_s'])
-                    result['ellapsed'] = elapsed
+                    result['elapsed'] = elapsed
                     result['tags'] = self.read_tags(result['id'])
                 return results
         except Exception as e:
@@ -106,7 +117,7 @@ class BabblerDB(object):
                 for result in results:
                     result['time_s'] = "{}".format(result['time_s'])
                     elapsed = get_elapsed_time(result['time_s'])
-                    result['ellapsed'] = elapsed
+                    result['elapsed'] = elapsed
                     result['tags'] = self.read_tags(result['id'])
                 return results
         except Exception as e:

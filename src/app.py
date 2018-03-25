@@ -1,8 +1,10 @@
 import hashlib
 import binascii
+import datetime
 
 from flask import Flask, render_template, request, session, url_for, redirect
 from src.data.babblerdb import BabblerDB
+from src.data.utils import crop_tags_in_message
 
 
 app = Flask(__name__)
@@ -26,6 +28,18 @@ def main():
                            new_login=request.args.get('new_login'),
                            babbler=request.args.get('babbler'),
                            logged=logged)
+
+
+@app.route('/new-babble', methods=['POST'])
+def new_babble():
+    data = request.form
+    message = data['babble']
+    tags, message = crop_tags_in_message(message)
+    id = db.generate_babble_id()
+
+    # TODO: insert good user
+    db.add_babble(id, 'gablalib', message, datetime.datetime.now(), tags)
+    return redirect('/myfeed')
 
 
 @app.route('/login', methods=['GET', 'POST'])
