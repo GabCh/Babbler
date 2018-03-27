@@ -16,7 +16,7 @@ app.secret_key = 'YmxhemVpdDQyMA=='
 # Config data for DB
 app.config['DB_HOST'] = 'localhost'
 app.config['DB_USER'] = 'root'
-app.config['DB_PASSWORD'] = ''
+app.config['DB_PASSWORD'] = 'choupi'
 app.config['DB_NAME'] = 'Babbler'
 db = BabblerDB(app)
 
@@ -48,7 +48,7 @@ def new_babble():
         db.add_babble(id, session['username'], message, datetime.datetime.now(), tags)
 
         if request.path != '/myfeed':
-            return redirect(url_for('/'))
+            return redirect('/')
         else:
             return redirect(url_for('/myfeed'))
     else:
