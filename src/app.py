@@ -10,41 +10,54 @@ from src.data.utils import crop_tags_in_message
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+# By default in Flask, session expires after 31 days.
+app.secret_key = 'YmxhemVpdDQyMA=='
+
+# Config data for DB
 app.config['DB_HOST'] = 'localhost'
 app.config['DB_USER'] = 'root'
 app.config['DB_PASSWORD'] = ''
 app.config['DB_NAME'] = 'Babbler'
+db = BabblerDB(app)
 
 #  Hashing salt
 salt = '1WZZhonPwvMWzu3pU5J+4fp1d9SCHYi3qQ4QpxTvznatMsSzl4iOKCtF++vBJ+ZQPOXCDIs0ipiaPAlEI2RSGQ=='
-
-db = BabblerDB(app)
 
 
 @app.route('/')
 def main():
     logged = 'username' in session
-    return render_template('index.html',
-                           new_login=request.args.get('new_login'),
-                           babbler=request.args.get('babbler'),
-                           logged=logged)
+    if logged:
+        username = session['username']
+        babbles = db.get_babbles_from_followed_babblers(username)
+        return render_template('index.html',
+                               new_login=request.args.get('new_login'),
+                               babbler=username, babbles=babbles,
+                               logged=logged)
+    else:
+        return redirect('/login')
 
 
 @app.route('/new-babble', methods=['POST'])
 def new_babble():
-    data = request.form
-    message = data['babble']
-    tags, message = crop_tags_in_message(message)
-    id = db.generate_babble_id()
+    if 'username' in session:
+        data = request.form
+        message = data['babble']
+        tags, message = crop_tags_in_message(message)
+        id = db.generate_babble_id()
+        db.add_babble(id, session['username'], message, datetime.datetime.now(), tags)
 
-    # TODO: insert good user
-    db.add_babble(id, 'gablalib', message, datetime.datetime.now(), tags)
-    return redirect('/myfeed')
+        if request.path != '/myfeed':
+            return redirect(url_for('/'))
+        else:
+            return redirect(url_for('/myfeed'))
+    else:
+        return redirect(url_for('/login'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    view = render_template('partials/login.html',
+    view = render_template('/partials/login.html',
                            newly_registered=request.args.get('newly_registered'),
                            invalid=request.args.get('invalid'))
     if request.method == 'POST':
@@ -55,6 +68,7 @@ def login():
 
         result = db.authenticate(username, password)
         if result:
+            session['username'] = username
             return 'True'
     return view
 
@@ -74,45 +88,61 @@ def register():
 @app.route('/logout')
 def logout():
     session.pop('username', None)
-    return redirect('/')
+    return redirect('/login')
 
 
 @app.route('/myprofile')
 def my_profile():
-    if session['logged_in']:
-        return render_template('myprofile.html')
+    if 'username' in session:
+        return render_template('/partials/myprofile.html', logged=True)
     else:
         return redirect(url_for('/login'))
 
 
 @app.route('/myfeed')
 def feed():
-    babbles = db.get_babbles_from_followed_babblers('GabCh')
-    return render_template('partials/feed.html', babbles=babbles)
+    if 'username' in session:
+        babbles = db.get_babbles_from_followed_babblers(session['username'])
+        return render_template('/partials/feed.html', babbles=babbles, logged=True)
+    else:
+        return redirect(url_for('/login'))
 
 
 @app.route('/babblers/<username>')
 def babbler_profile(username):
-    view = render_template('/partials/profile.html', user=username)
-    return view
+    if 'username' in session:
+        view = render_template('/partials/profile.html', user=username, logged=True)
+        return view
+    else:
+        return redirect(url_for('/login'))
 
 
 @app.route('/tag/<tag>')
 def tag_page(tag):
-    babbles = db.read_babbles_with_tag(tag)
-    view = render_template('/partials/tag_results.html', babbles=babbles, tag=tag)
-    return view
+    if 'username' in session:
+        babbles = db.read_babbles_with_tag(tag)
+        view = render_template('/partials/tag_results.html', babbles=babbles, tag=tag, logged=True)
+        return view
+    else:
+        return redirect(url_for('/login'))
 
 
 @app.route('/search')
 def search_form():
-    keyword = request.args.get('keyword')
-    if keyword:
-        babbles = db.read_babbles(keyword)
-        babblers = db.read_babblers(keyword)
-        return render_template('/partials/search_results.html', keyword=keyword, babbles=babbles, babblers=babblers)
+    if 'username' in session:
+        keyword = request.args.get('keyword')
+        if keyword:
+            babbles = db.read_babbles(keyword)
+            babblers = db.read_babblers(keyword)
+            return render_template('/partials/search_results.html',
+                                   keyword=keyword, babbles=babbles,
+                                   babblers=babblers, logged=True)
+        else:
+            username = session['username']
+            babbles = db.get_babbles_from_followed_babblers(username)
+            return render_template('index.html', babbler=username, babbles=babbles, logged=True)
     else:
-        return render_template('index.html')
+        return redirect(url_for('/login'))
 
 
 # Validate if <username> is already taken.

@@ -1,9 +1,5 @@
 {% extends 'layout.html' %}
 
-{% block head %}
-    <script src="{{ url_for('static', filename='js/feed.js') }}" type="text/javascript"></script>
-{% endblock %}
-
 {% block body %}
     <div class="section">
         <p class="title is-2 is-spaced">Write a babble</p>
@@ -28,7 +24,8 @@
                 <div class="media-content">
                      <div class="content">
                         <p>
-                            <strong>@{{ babble.username }}</strong> <small>{{ babble.elapsed }} ago</small>
+                            <a href="/babblers/{{ babble.username }}"><strong>@{{ babble.username }}</strong></a>
+                            <small>{{ babble.elapsed }} ago</small>
                         <br>
                         {{ babble.message }}
                         </p>

@@ -62,19 +62,20 @@ class BabblerDB(object):
 
     def get_babbles_from_followed_babblers(self, username):
         try:
-            username = '%' + username + '%'
             with self.connection.cursor() as cursor:
                 sql = """
                     SELECT B.id, B.username, B.message, B.time_s
                     FROM Babbles B, Follows F
-                    WHERE F.follower LIKE %s AND F.followed = B.username
+                    WHERE F.follower LIKE %s AND F.followed = B.username OR B.username = %s
                     GROUP BY B.time_s DESC;"""
-                cursor.execute(sql, (username,))
+                cursor.execute(sql, (username, username,))
                 results = cursor.fetchall()
                 for result in results:
                     result['time_s'] = "{}".format(result['time_s'])
                     result['elapsed'] = get_elapsed_time(result['time_s'])
                     result['tags'] = self.read_tags(result['id'])
+                if not results:
+                    return []
                 return results
         except Exception as e:
             print(e)
