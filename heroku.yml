@@ -1,6 +1,0 @@
-build:
-  languages:
-    - python
-
-run:
-  web: python src/app.py
