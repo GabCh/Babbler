@@ -60,6 +60,19 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
+    def following(self, user: str, other: str):
+        try:
+            with self.connection.cursor() as cursor:
+                sql = "SELECT follower, followed FROM Follows WHERE follower = %s AND followed = %s"
+                cursor.execute(sql, (user, other,))
+                result = cursor.fetchone()
+                if result:
+                    return True
+                else:
+                    return False
+        except Exception as e:
+            print(e)
+
     def get_babbles_from_followed_babblers(self, username):
         try:
             with self.connection.cursor() as cursor:
@@ -124,6 +137,23 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
+    def read_user_babbles(self, username: str):
+        try:
+            with self.connection.cursor() as cursor:
+                sql = "SELECT id, username, message, time_s "\
+                      "FROM Babbles WHERE username = %s" \
+                      "GROUP BY Babbles.time_s DESC;"
+                cursor.execute(sql, (username,))
+                results = cursor.fetchall()
+                for result in results:
+                    result['time_s'] = "{}".format(result['time_s'])
+                    elapsed = get_elapsed_time(result['time_s'])
+                    result['elapsed'] = elapsed
+                    result['tags'] = self.read_tags(result['id'])
+                return results
+        except Exception as e:
+            print(e)
+
     def read_tags(self, babble_id: int):
         try:
             with self.connection.cursor() as cursor:
@@ -142,6 +172,24 @@ class BabblerDB(object):
                 cursor.execute(sql, (keyword,))
                 results = cursor.fetchall()
                 return results
+        except Exception as e:
+            print(e)
+
+    def remove_follower(self, follower, followed):
+        sql = "DELETE FROM Follows WHERE follower = %s AND followed = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (follower, followed))
+                self.connection.commit()
+        except Exception as e:
+            print(e)
+
+    def remove_babbler(self, username):
+        sql = "DELETE FROM Babblers WHERE username = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (username,))
+                self.connection.commit()
         except Exception as e:
             print(e)
 

@@ -1,6 +1,8 @@
 import hashlib
 import binascii
 import datetime
+import os
+import shutil
 
 from flask import Flask, render_template, request, session, url_for, redirect
 from src.data.babblerdb import BabblerDB
@@ -46,13 +48,33 @@ def new_babble():
         tags, message = crop_tags_in_message(message)
         id = db.generate_babble_id()
         db.add_babble(id, session['username'], message, datetime.datetime.now(), tags)
-
-        if request.path != '/myfeed':
-            return redirect('/')
-        else:
-            return redirect(url_for('/myfeed'))
+        return redirect('/myfeed')
     else:
-        return redirect(url_for('/login'))
+        return redirect('/login')
+
+
+@app.route('/delete/<user>', methods=['POST'])
+def delete(user):
+    connected_user = 'username' in session
+    if connected_user and session['username'] == user:
+        session.pop('username', None)
+        db.remove_babbler(user)
+        os.remove('./static/images/' + str(user) + '.jpg')
+        return redirect('/login')
+
+
+@app.route('/follow/<other>', methods=['POST'])
+def follow(other):
+    if 'username' in session:
+        db.add_follower(session['username'], other)
+        return redirect('/babblers/' + str(other))
+
+
+@app.route('/unfollow/<other>', methods=['POST'])
+def unfollow(other):
+    if 'username' in session:
+        db.remove_follower(session['username'], other)
+        return redirect('/babblers/' + str(other))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -69,6 +91,7 @@ def login():
         result = db.authenticate(username, password)
         if result:
             session['username'] = username
+            session['publicName'] = result['publicName']
             return 'True'
     return view
 
@@ -80,8 +103,9 @@ def register():
         data = request.form
         password = hashlib.pbkdf2_hmac('sha256', data['password'].encode(), salt.encode(), 65336)
         password = str(binascii.hexlify(password))[2:-1]
-
         db.add_babbler(data['username'], data['public_name'], password)
+        shutil.copy(os.path.abspath('static/placeholders/profile.jpg'),
+                    os.path.abspath('static/images/' + str(data['username']) + '.jpg'))
     return view
 
 
@@ -94,9 +118,11 @@ def logout():
 @app.route('/myprofile')
 def my_profile():
     if 'username' in session:
-        return render_template('/partials/myprofile.html', logged=True)
+        user = {'username': session['username'], 'publicName': session['publicName']}
+        babbles = db.read_user_babbles(user['username'])
+        return render_template('/partials/myprofile.html', user=user, babbles=babbles, logged=True)
     else:
-        return redirect(url_for('/login'))
+        return redirect('/login')
 
 
 @app.route('/myfeed')
@@ -105,16 +131,21 @@ def feed():
         babbles = db.get_babbles_from_followed_babblers(session['username'])
         return render_template('/partials/feed.html', babbles=babbles, logged=True)
     else:
-        return redirect(url_for('/login'))
+        return redirect('/login')
 
 
 @app.route('/babblers/<username>')
 def babbler_profile(username):
     if 'username' in session:
-        view = render_template('/partials/profile.html', user=username, logged=True)
+        if session['username'] == username:
+            return redirect('/myprofile')
+        user = db.read_babblers(username)
+        followed = db.following(session['username'], username)
+        babbles = db.read_user_babbles(username)
+        view = render_template('/partials/profile.html', user=user, followed=followed, babbles=babbles, logged=True)
         return view
     else:
-        return redirect(url_for('/login'))
+        return redirect('/login')
 
 
 @app.route('/tag/<tag>')
@@ -124,7 +155,7 @@ def tag_page(tag):
         view = render_template('/partials/tag_results.html', babbles=babbles, tag=tag, logged=True)
         return view
     else:
-        return redirect(url_for('/login'))
+        return redirect('/login')
 
 
 @app.route('/search')
@@ -142,7 +173,7 @@ def search_form():
             babbles = db.get_babbles_from_followed_babblers(username)
             return render_template('index.html', babbler=username, babbles=babbles, logged=True)
     else:
-        return redirect(url_for('/login'))
+        return redirect('/login')
 
 
 # Validate if <username> is already taken.
