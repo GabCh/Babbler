@@ -1,9 +1,25 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="section">
-    {% if new_login %}
-        <p class="title is-2 is-spaced">Welcome, {{ babbler }}!</p>
-        <p class="subtitle is-4">Long time no see!</p>
-    {% endif %}
-</div>
+<section class="hero is-primary">
+  <div class="hero-body">
+    <div class="container">
+        {% if new_login or logged%}
+      <h1 class="title">
+        Welcome, {{ babbler }}!
+      </h1>
+        {% endif %}
+        {% if new_login %}
+      <h2 class="subtitle">
+        Long time no see!
+      </h2>
+        {% endif %}
+        {% if logged %}
+      <h2 class="subtitle">
+        What's new?
+      </h2>
+        {% endif %}
+    </div>
+  </div>
+</section>
+{% include "partials/feed.html" with context %}
 {% endblock %}

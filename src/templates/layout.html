@@ -11,7 +11,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar is-primary is-fixed-top" role="navigation">
+        <nav id="menu" class="navbar is-primary is-fixed-top" role="navigation">
             <div class="navbar-brand">
                 <a class="navbar-item" href="/">
                     <span class="icon is-large">
@@ -24,54 +24,57 @@
                 <div class="navbar-start">
                     <div class="navbar-item">
                     <form action="/search" method="GET" id="search-form">
+                        Search for:
                         <div class="field is-grouped">
                             <input style="margin-right:20px;" type="text" value="{{ keyword }}" name="keyword">
-                            <a class="button is-info is-rounded is-inverted" href="javascript:{}" onclick="document.getElementById('search-form').submit();">
-                                <span>Go</span>
-                                <span class="icon">
-                                    <i class="fas fa-chevron-right"></i>
-                                </span>
-                            </a>
                         </div>
                     </form>
                 </div>
                 </div>
                 <div class="navbar-end">
-                    {% if not session.logged_in %}
-                        <div class="navbar-item">
-                            <a class="button is-info is-rounded" href="/login">
-                                <span class="icon">
-                                    <i class="fas fa-user"></i>
-                                </span>
-                                <span>Login</span>
-                            </a>
-                        </div>
-                        <div class="navbar-item">
-                            <a class="button is-info is-rounded" href="/register">
-                                <span class="icon">
-                                    <i class="fas fa-user-plus"></i>
-                                </span>
-                                <span>Register</span>
-                            </a>
-                        </div>
-                    {% else %}
-                        <div class="navbar-item">
-                            <a class="button is-info is-inverted is-rounded" href="/newbabble">
-                                <span class="icon">
-                                    <i class="fas fa-plus"></i>
-                                </span>
-                                <span>New Babble</span>
-                            </a>
-                        </div>
-                        <div class="navbar-item">
-                            <a class="button is-info is-inverted is-rounded" href="/myprofile">
-                                <span class="icon">
-                                    <i class="fas fa-child"></i>
-                                </span>
-                                <span>My profile</span>
-                            </a>
-                        </div>
-                    {% endif %}
+                {% if not logged %}
+                    <div class="navbar-item">
+                        <a class="button is-info is-rounded" href="/login">
+                            <span class="icon">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <span>Login</span>
+                        </a>
+                    </div>
+                    <div class="navbar-item">
+                        <a class="button is-info is-rounded" href="/register">
+                            <span class="icon">
+                                <i class="fas fa-user-plus"></i>
+                            </span>
+                            <span>Register</span>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="navbar-item">
+                        <a class="button is-info is-inverted is-rounded" href="/myfeed">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span>New Babble</span>
+                        </a>
+                    </div>
+                    <div class="navbar-item">
+                        <a class="button is-info is-inverted is-rounded" href="/myprofile">
+                            <span class="icon">
+                                <i class="fas fa-child"></i>
+                            </span>
+                            <span>My profile</span>
+                        </a>
+                    </div>
+                    <div class="navbar-item">
+                        <a class="button is-danger is-rounded" href="/logout">
+                            <span>Logout</span>
+                            <span class="icon">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </span>
+                        </a>
+                    </div>
+                {% endif %}
                 </div>
             </div>
         </nav>

@@ -1,0 +1,70 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<div class="section">
+    <div class="card">
+        <div class="card-image">
+            <figure class="image is-4by3">
+                <img src="{{ url_for('static', filename='images/') }}{{ user.username }}.jpg" alt="{{ user.username }}">
+            </figure>
+        </div>
+        <div class="card-content">
+            <div class="media">
+                <div class="media-left">
+                    <figure class="image is-48x48">
+                        <img src="{{ url_for('static', filename='images/') }}{{ user.username }}.jpg" alt="{{ user.username }}">
+                    </figure>
+                </div>
+                <div class="content">
+                    <p class="title is-4">{{ user.publicName }}</p>
+                    <p class="subtitle is-6">@{{ user.username }}</p>
+                </div>
+            </div>
+        </div>
+        <footer class="card-footer">
+            <form action="/delete/{{ user.username }}" method="post" class="card-footer-item">
+                    <button type="submit" name="other" value="{{ user.username }}"
+                            style="color: red;font-size:1rem;font-weight: 400;background-color: Transparent;background-repeat:no-repeat;border: none;cursor:pointer;overflow: hidden;outline:none;">Delete account</button>
+            </form>
+        </footer>
+    </div>
+</div>
+<div class="section">
+    <p class="title is-2 is-spaced">Babbles of {{ user.username }}</p>
+    {% for babble in babbles %}
+    <div class="box">
+      <article class="media">
+        <div class="media-left">
+          <figure class="image is-64x64">
+              <a href="/babblers/{{ babble.username }}"><img src="{{ url_for('static', filename='images/') }}{{ babble.username }}.jpg" alt="{{ babble.username }}"></a>
+          </figure>
+        </div>
+        <div class="media-content">
+          <div class="content">
+              <p>
+                  <a href="/babblers/{{ babble.username }}"><strong>@{{ babble.username }}</strong></a> <small>{{ babble.elapsed }} ago</small>
+                  <br>
+                  {{ babble.message }}
+                  {% for tag in babble.tags %}
+                  <a href="/tag/{{ tag.tag }}">#{{tag.tag}}</a>
+                  {% endfor %}
+              </p>
+          </div>
+          <nav class="level is-mobile">
+            <div class="level-left">
+              <a class="level-item">
+                <span class="icon is-small"><i class="fas fa-reply"></i></span>
+              </a>
+              <a class="level-item">
+                <span class="icon is-small"><i class="fas fa-heart"></i></span>
+              </a>
+            </div>
+          </nav>
+        </div>
+      </article>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
