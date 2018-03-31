@@ -50,6 +50,15 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
+    def add_like(self, id, username):
+        sql = "INSERT INTO Likes VALUES (%s, %s)"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (id, username))
+                self.connection.commit()
+        except Exception as e:
+            print(e)
+
     def authenticate(self, username, password):
         try:
             with self.connection.cursor() as cursor:
@@ -77,7 +86,7 @@ class BabblerDB(object):
         try:
             with self.connection.cursor() as cursor:
                 sql = """
-                    SELECT B.id, B.username, B.message, B.time_s
+                    SELECT B.id, B.username, B.message, B.time_s, B.nbLikes
                     FROM Babbles B, Follows F
                     WHERE F.follower LIKE %s AND F.followed = B.username OR B.username = %s
                     GROUP BY B.time_s DESC;"""
@@ -193,6 +202,15 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
+    def remove_like(self, id, username):
+        sql = "DELETE FROM Likes WHERE id = %s AND username = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (id, username))
+                self.connection.commit()
+        except Exception as e:
+            print(e)
+
     def validate_username(self, username):
         try:
             with self.connection.cursor() as cursor:
@@ -200,6 +218,19 @@ class BabblerDB(object):
                 cursor.execute(sql, (username,))
                 result = cursor.fetchone()
                 return result
+        except Exception as e:
+            print(e)
+
+    def already_liked_this_babble(self, id, username):
+        sql = "SELECT username FROM Likes WHERE id = %s AND username = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (id, username))
+                results = cursor.fetchall()
+                if len(results) == 0:
+                    return False
+                else:
+                    return True
         except Exception as e:
             print(e)
 

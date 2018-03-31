@@ -185,6 +185,16 @@ def get_user(username):
         exists = True
     return str(exists)
 
+@app.route('/like/<id>')
+def like_babble(id):
+    if 'username' in session:
+        if db.already_liked_this_babble(id, session['username']):
+            db.remove_like(id, session['username'])
+        else:
+            db.add_like(id, session['username'])
+        return redirect('/myfeed')
+    else:
+        return redirect('/login')
 
 if __name__ == '__main__':
     app.run()
