@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Babblers(username char(12),
 CREATE TABLE IF NOT EXISTS Babbles(id integer, 
 					 username char(12), 
                      message TEXT, 
-                     time_s TIMESTAMP,
+                     time_s TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                      nbLikes integer,
                      PRIMARY KEY(id), 
                      FOREIGN KEY(username) REFERENCES Babblers(username));
@@ -33,6 +33,12 @@ CREATE TABLE IF NOT EXISTS Likes(id integer,
 								 username char(12),
                                  FOREIGN KEY(id) REFERENCES Babbles(id) ON DELETE CASCADE,
                                  FOREIGN KEY(username) REFERENCES Babblers(username) ON DELETE CASCADE);
+                                 
+CREATE TABLE IF NOT EXISTS Comments(id integer,
+									username char(12),
+                                    comment TEXT,
+                                    FOREIGN KEY(id) REFERENCES Babbles(id) ON DELETE CASCADE,
+                                    FOREIGN KEY(username) REFERENCES Babblers(username) ON DELETE CASCADE);
 
 delimiter //
 CREATE TRIGGER likeBabble 
@@ -40,7 +46,7 @@ AFTER INSERT ON Likes
 FOR EACH ROW
 BEGIN
 	UPDATE Babbles
-    SET nbLikes = nbLikes + 1
+    SET nbLikes = nbLikes + 1 AND time_s = time_s
     WHERE id = NEW.id;
 END;//
 delimiter ;
@@ -51,7 +57,7 @@ AFTER DELETE ON Likes
 FOR EACH ROW
 BEGIN
 	UPDATE Babbles
-    SET nbLikes = nbLikes - 1
+    SET nbLikes = nbLikes - 1 AND time_s = time_s
     WHERE id = OLD.id;
 END;//
 delimiter ;
