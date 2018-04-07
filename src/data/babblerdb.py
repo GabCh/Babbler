@@ -22,7 +22,7 @@ class BabblerDB(object):
             print(e)
 
     def add_babble(self, id, username, message, time_s, tags):
-        sql = "INSERT INTO Babbles VALUES (%s, %s, %s, %s)"
+        sql = "INSERT INTO Babbles VALUES (%s, %s, %s, %s, 0)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (id, username, message, time_s))
@@ -116,7 +116,7 @@ class BabblerDB(object):
         try:
             keyword = '%' + keyword + '%'
             with self.connection.cursor() as cursor:
-                sql = "SELECT id, username, message, time_s FROM Babbles WHERE message LIKE %s" \
+                sql = "SELECT id, username, message, time_s, nbLikes FROM Babbles WHERE message LIKE %s" \
                       "GROUP BY Babbles.time_s DESC;"
                 cursor.execute(sql, (keyword,))
                 results = cursor.fetchall()
@@ -132,7 +132,7 @@ class BabblerDB(object):
     def read_babbles_with_tag(self, tag: str):
         try:
             with self.connection.cursor() as cursor:
-                sql = "SELECT id, username, message, time_s "\
+                sql = "SELECT id, username, message, time_s, nbLikes "\
                       "FROM Babbles WHERE id IN (SELECT id FROM Tag WHERE tag = %s)" \
                       "GROUP BY Babbles.time_s DESC;"
                 cursor.execute(sql, (tag,))
@@ -149,7 +149,7 @@ class BabblerDB(object):
     def read_user_babbles(self, username: str):
         try:
             with self.connection.cursor() as cursor:
-                sql = "SELECT id, username, message, time_s "\
+                sql = "SELECT id, username, message, time_s, nbLikes "\
                       "FROM Babbles WHERE username = %s" \
                       "GROUP BY Babbles.time_s DESC;"
                 cursor.execute(sql, (username,))
@@ -231,6 +231,16 @@ class BabblerDB(object):
                     return False
                 else:
                     return True
+        except Exception as e:
+            print(e)
+
+    def get_nbLikes(self, id):
+        sql = "SELECT nbLikes FROM Babbles WHERE id = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (id,))
+                result = cursor.fetchone()
+                return result['nbLikes']
         except Exception as e:
             print(e)
 
