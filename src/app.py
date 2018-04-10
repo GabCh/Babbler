@@ -87,6 +87,7 @@ def login():
         username = data['username']
         password = hashlib.pbkdf2_hmac('sha256', data['password'].encode(), salt.encode(), 65336)
         password = str(binascii.hexlify(password))[2:-1]
+        print(password)
 
         result = db.authenticate(username, password)
         if result:
@@ -185,19 +186,6 @@ def get_user(username):
         exists = True
     return str(exists)
 
-
-@app.route('/login')
-def login():
-    error = None
-    if request.method == 'POST':
-        if request.form['user'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            return redirect(url_for('/home'))
-    return render_template('login.html', error=error)
 
 
 @app.route('/home')

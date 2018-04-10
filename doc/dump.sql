@@ -3,14 +3,14 @@ USE Babbler;
 ALTER USER 'root'@'localhost' IDENTIFIED BY 'choupi';
 set global sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 
-CREATE TABLE IF NOT EXISTS Babblers(username char(12), 
+CREATE TABLE IF NOT EXISTS Babblers(username char(24), 
 					  publicName char(24), 
                       password char(64), 
                       PRIMARY KEY(username));
 
 
 CREATE TABLE IF NOT EXISTS Babbles(id integer, 
-					 username char(12), 
+					 username char(24), 
                      message TEXT, 
                      time_s TIMESTAMP, 
                      PRIMARY KEY(id), 
@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS Tag(id integer,
                  
 
 
-CREATE TABLE IF NOT EXISTS Follows(follower char(12),
-					 followed char(12),
+CREATE TABLE IF NOT EXISTS Follows(follower char(24),
+					 followed char(24),
                      FOREIGN KEY(follower) REFERENCES Babblers(username) ON DELETE CASCADE,
                      FOREIGN KEY(followed) REFERENCES Babblers(username) ON DELETE CASCADE);
 

@@ -123,9 +123,9 @@ class BabblerDB(object):
     def read_babbles_with_tag(self, tag: str):
         try:
             with self.connection.cursor() as cursor:
-                sql = "SELECT id, username, message, time_s "\
-                      "FROM Babbles WHERE id IN (SELECT id FROM Tag WHERE tag = %s)" \
-                      "GROUP BY Babbles.time_s DESC;"
+                sql = "SELECT * "\
+                      "FROM Babbles WHERE id IN (SELECT DISTINCT id FROM Tag WHERE tag = %s)" \
+                      "GROUP BY Babbles.username, Babbles.time_s DESC;"
                 cursor.execute(sql, (tag,))
                 results = cursor.fetchall()
                 for result in results:
