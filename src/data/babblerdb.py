@@ -59,6 +59,15 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
+    def add_comment(self, babbleID, commentID, username, message):
+        sql = "INSERT INTO Comments VALUES (%s, %s, %s, %s)"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (babbleID, commentID, username, message))
+                self.connection.commit()
+        except Exception as e:
+            print(e)
+
     def authenticate(self, username, password):
         try:
             with self.connection.cursor() as cursor:
@@ -102,8 +111,38 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
+    def get_comments_of_babble(self, babbleID):
+        try:
+            with self.connection.cursor() as cursor:
+                sql = """
+                    SELECT B.commentID, B.username, B.message, B.time_s
+                    FROM Comments B
+                    WHERE B.babbleID = %s
+                    GROUP BY B.time_s DESC;"""
+                cursor.execute(sql, (babbleID,))
+                results = cursor.fetchall()
+                for result in results:
+                    result['time_s'] = "{}".format(result['time_s'])
+                    result['elapsed'] = get_elapsed_time(result['time_s'])
+                    result['tags'] = self.read_tags(result['id'])
+                if not results:
+                    return []
+                return results
+        except Exception as e:
+            print(e)
+
     def generate_babble_id(self):
         sql = "SELECT MAX(id) AS max_id FROM Babbles"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql)
+                result = cursor.fetchone()
+                return result['max_id'] + 1
+        except Exception as e:
+            print(e)
+
+    def generate_comment_id(self):
+        sql = "SELECT MAX(commentID) AS max_id FROM Comments"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql)
@@ -207,6 +246,15 @@ class BabblerDB(object):
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (id, username))
+                self.connection.commit()
+        except Exception as e:
+            print(e)
+
+    def remove_comment(self, commentID):
+        sql = "DELETE FROM Comments WHERE commentID = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (commentID,))
                 self.connection.commit()
         except Exception as e:
             print(e)

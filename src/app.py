@@ -185,6 +185,7 @@ def get_user(username):
         exists = True
     return str(exists)
 
+
 @app.route('/like', methods=['GET', 'POST'])
 def like_babble():
     if 'username' in session:
@@ -197,6 +198,7 @@ def like_babble():
         return str(db.get_nbLikes(id))
     else:
         return redirect('/login')
+
 
 if __name__ == '__main__':
     app.run()
