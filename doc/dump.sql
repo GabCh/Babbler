@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Babbles(id integer,
                      message TEXT, 
                      time_s TIMESTAMP, 
                      PRIMARY KEY(id), 
-                     FOREIGN KEY(username) REFERENCES Babblers(username));
+                     FOREIGN KEY(username) REFERENCES Babblers(username) ON DELETE CASCADE);
                                         
 
 CREATE TABLE IF NOT EXISTS Tag(id integer,
