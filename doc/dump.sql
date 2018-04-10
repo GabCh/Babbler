@@ -63,8 +63,3 @@ INSERT INTO Follows VALUES ('gablalib', 'GabCh');
 INSERT INTO Follows VALUES ('GabCh', 'gablalib');
 INSERT INTO Follows VALUES ('GabCh', 'Jannik');
 INSERT INTO Follows VALUES ('gablalib', 'Jannik');
-
-SELECT B.username, B.message, B.time_s
-FROM Babbles B, Follows F
-WHERE F.follower = 'gablalib' AND F.followed = B.username
-GROUP BY B.time_s DESC;
