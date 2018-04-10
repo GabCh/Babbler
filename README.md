@@ -11,11 +11,14 @@ virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
 mysql -u root -p < doc/dump.sql
-cd src/data
-python populate.py
-cd ..
-python app.py
 ```
+
+Par la suite, exécuter le fichier src/data/populate.py dans votre IDE. Celui-ci s'occupera d'ajouter des données au projet.
+
+Finalement, il suffit de lancé l'application avec le fichier src/app.py.
+
+(le main se trouve a la fin des deux fichier)
+
 # FAQ
 - Lors de l'exécution du projet, si la page d'accueil retourne une erreur 500, c'est parce qu'il faut configurer le sql_mode ainsi:
 ```bash
