@@ -177,43 +177,12 @@ def search_form():
 
 
 # Validate if <username> is already taken.
-
 @app.route('/users/<username>', methods=['GET'])
 def get_user(username):
     exists = False
     if db.validate_username(username):
         exists = True
     return str(exists)
-
-
-@app.route('/login')
-def login():
-    error = None
-    if request.method == 'POST':
-        if request.form['user'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            return redirect(url_for('/home'))
-    return render_template('login.html', error=error)
-
-
-@app.route('/home')
-def home():
-    if session['logged_in']:
-        return render_template('newsfeed.html')
-    else:
-        return render_template('homepage.html')
-
-
-@app.route('/myprofile')
-def profile():
-    if session['logged_in']:
-        return render_template('profile.html')
-    else:
-        return redirect(url_for('/login'))
 
 
 if __name__ == '__main__':
