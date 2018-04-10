@@ -40,15 +40,18 @@ def main():
         return redirect('/login')
 
 
-@app.route('/new-babble', methods=['POST'])
+@app.route('/new-babble', methods=['GET', 'POST'])
 def new_babble():
     if 'username' in session:
-        data = request.form
-        message = data['babble']
-        tags, message = crop_tags_in_message(message)
-        id = db.generate_babble_id()
-        db.add_babble(id, session['username'], message, datetime.datetime.now(), tags)
-        return redirect('/myfeed')
+        if request.method == 'POST':
+            data = request.form
+            message = data['babble']
+            tags, message = crop_tags_in_message(message)
+            id = db.generate_babble_id()
+            db.add_babble(id, session['username'], message, datetime.datetime.now(), tags)
+            return redirect('/myfeed')
+        else:
+            return render_template('/partials/newbabble.html', logged=True)
     else:
         return redirect('/login')
 
@@ -129,7 +132,7 @@ def my_profile():
 def feed():
     if 'username' in session:
         babbles = db.get_babbles_from_followed_babblers(session['username'])
-        return render_template('/partials/feed.html', babbles=babbles, logged=True)
+        return render_template('/partials/myfeed.html', babbles=babbles, logged=True)
     else:
         return redirect('/login')
 
