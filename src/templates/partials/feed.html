@@ -27,7 +27,9 @@
                             <a href="/babblers/{{ babble.username }}"><strong>@{{ babble.username }}</strong></a>
                             <small>{{ babble.elapsed }} ago</small>
                         <br>
-                        {{ babble.message }}
+                            <div style="white-space:pre-line;">
+                                {{ babble.message }}
+                            </div>
                         </p>
                          {% for tag in babble.tags %}
                             <a href="/tag/{{ tag.tag }}">#{{tag.tag}}</a>

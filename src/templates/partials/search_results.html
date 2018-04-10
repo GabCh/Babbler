@@ -16,7 +16,9 @@
               <p>
                   <a href="/babblers/{{ babble.username }}"><strong>@{{ babble.username }}</strong></a> <small>{{ babble.elapsed }} ago</small>
                   <br>
+                  <div style="white-space:pre-line;">
                   {{ babble.message }}
+                  </div>
                   {% for tag in babble.tags %}
                   <a href="/tag/{{ tag.tag }}">#{{tag.tag}}</a>
                   {% endfor %}
