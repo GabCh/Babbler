@@ -21,18 +21,18 @@ f = Figlet(font='slant')
 
 
 def populate_users(db: BabblerDB):
-    with open('user_data/users') as users:
+    with open('../src/babbler/fake_user_data/users') as users:
         for user in users:
             user = user.replace('\n', '')
             username, public, password = user.split(', ', maxsplit=2)
-            shutil.copy(os.path.abspath('../static/placeholders/profile.jpg'),
-                        os.path.abspath('../static/images/' + str(username) + '.jpg'))
+            shutil.copy(os.path.abspath('../src/static/placeholders/profile.jpg'),
+                        os.path.abspath('../src/static/images/' + str(username) + '.jpg'))
             db.add_babbler(username, public, password)
     users.close()
 
 
 def populate_babbles(db: BabblerDB):
-    with open('user_data/users') as users, open('user_data/tags') as tags:
+    with open('../src/babbler/fake_user_data/users') as users, open('../src/babbler/fake_user_data/tags') as tags:
         lines = users.readlines()
         tags_lines = tags.readlines()
         for i in range(BABBLES_MAX):
