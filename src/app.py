@@ -177,6 +177,8 @@ def search_form():
         if keyword:
             babbles = db.read_babbles(keyword)
             babblers = db.read_babblers(keyword)
+            babbles_with_tag = db.read_babbles_with_tag(keyword)
+            babbles.extend(babbles_with_tag)
             return render_template('/partials/search_results.html',
                                    keyword=keyword, babbles=babbles,
                                    babblers=babblers, logged=True)
