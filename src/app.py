@@ -90,7 +90,7 @@ def login():
         username = data['username']
         password = hashlib.pbkdf2_hmac('sha256', data['password'].encode(), salt.encode(), 65336)
         password = str(binascii.hexlify(password))[2:-1]
-        print(password)
+        # print(password)
 
         result = db.authenticate(username, password)
         if result:
