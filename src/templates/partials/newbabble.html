@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="container section">
+    <p class="title is-2 is-spaced">Write a babble</p>
+    <form action="/new-babble" method="POST" id="add-babble-form">
+        <div class="field is-grouped">
+            <textarea name="babble" class="textarea" placeholder="Say something to your friends!"></textarea>
+        </div>
+        <div class="level-left has-text-centered">
+            <button class="button is-primary spaced" type="submit">Babble it!</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
