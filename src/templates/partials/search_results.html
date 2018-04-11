@@ -17,7 +17,7 @@
                   <p>
                       <a href="/babblers/{{ babble.username }}"><strong>@{{ babble.username }}</strong></a> <small>{{ babble.elapsed }} ago</small>
                       <br>
-                      <div style="white-space:pre-line;">
+                      <div style="white-space: pre-line;">
                       {{ babble.message }}
                       </div>
                       {% for tag in babble.tags %}
@@ -47,7 +47,7 @@
             <div class="column is-one-quarter">
                 <a href="/babblers/{{ babbler.username }}"><div class="card">
                   <div class="card-image">
-                    <figure class="image is-4by3">
+                    <figure class="image is-square">
                       <img src="{{ url_for('static', filename='images/') }}{{ babbler.username }}.jpg" alt="{{ babbler.username }}">
                     </figure>
                   </div>

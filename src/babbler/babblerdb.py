@@ -1,5 +1,5 @@
 import pymysql.cursors
-from src.data.utils import get_elapsed_time
+from src.babbler.utils import get_elapsed_time
 
 
 class BabblerDB(object):
@@ -13,11 +13,12 @@ class BabblerDB(object):
                                           cursorclass=pymysql.cursors.DictCursor)
 
     def add_babbler(self, username, publicName, password):
-        sql = "INSERT INTO Babbler.Babblers VALUES ( %s , %s , %s)"
+        sql = "INSERT INTO Babblers VALUES (%s , %s , %s)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (username, publicName, password))
                 self.connection.commit()
+            print('SUCCESS')
         except Exception as e:
             print(e)
 
@@ -116,7 +117,10 @@ class BabblerDB(object):
                     elapsed = get_elapsed_time(result['time_s'])
                     result['elapsed'] = elapsed
                     result['tags'] = self.read_tags(result['id'])
-                return results
+                if results:
+                    return results
+                else:
+                    return []
         except Exception as e:
             print(e)
 
@@ -133,7 +137,10 @@ class BabblerDB(object):
                     elapsed = get_elapsed_time(result['time_s'])
                     result['elapsed'] = elapsed
                     result['tags'] = self.read_tags(result['id'])
-                return results
+                if results:
+                    return results
+                else:
+                    return []
         except Exception as e:
             print(e)
 
@@ -150,7 +157,10 @@ class BabblerDB(object):
                     elapsed = get_elapsed_time(result['time_s'])
                     result['elapsed'] = elapsed
                     result['tags'] = self.read_tags(result['id'])
-                return results
+                if results:
+                    return results
+                else:
+                    return []
         except Exception as e:
             print(e)
 
@@ -160,7 +170,10 @@ class BabblerDB(object):
                 sql = "SELECT DISTINCT tag FROM Tag WHERE id = %s"
                 cursor.execute(sql, (babble_id,))
                 results = cursor.fetchall()
-                return results
+                if results:
+                    return results
+                else:
+                    return []
         except Exception as e:
             print(e)
 
@@ -171,7 +184,44 @@ class BabblerDB(object):
                 sql = "SELECT username, publicName FROM Babblers WHERE username LIKE %s"
                 cursor.execute(sql, (keyword,))
                 results = cursor.fetchall()
-                return results
+                if results:
+                    return results
+                else:
+                    return []
+        except Exception as e:
+            print(e)
+
+    def read_followers(self, username: str):
+        try:
+            with self.connection.cursor() as cursor:
+                sql = """
+                    SELECT B.username, B.publicName FROM Babblers B
+                    WHERE B.username IN
+                    (SELECT F.follower FROM Follows F WHERE F.followed = %s);
+                      """
+                cursor.execute(sql, (username,))
+                results = cursor.fetchall()
+                if results:
+                    return results
+                else:
+                    return []
+        except Exception as e:
+            print(e)
+
+    def read_subscriptions(self, username: str):
+        try:
+            with self.connection.cursor() as cursor:
+                sql = """
+                    SELECT B.username, B.publicName FROM Babblers B
+                    WHERE B.username IN
+                    (SELECT F.followed FROM Follows F WHERE F.follower = %s);
+                      """
+                cursor.execute(sql, (username,))
+                results = cursor.fetchall()
+                if results:
+                    return results
+                else:
+                    return []
         except Exception as e:
             print(e)
 

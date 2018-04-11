@@ -1,6 +1,6 @@
 import shutil
 import os
-from data.babblerdb import BabblerDB
+from src.babbler.babblerdb import BabblerDB
 from random import randint
 from flask import Flask
 from pyfiglet import Figlet
@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['DB_HOST'] = 'localhost'
 app.config['DB_USER'] = 'root'
-app.config['DB_PASSWORD'] = 'choupi'
+app.config['DB_PASSWORD'] = 'babblerisawesome'
 app.config['DB_NAME'] = 'Babbler'
 
 BABBLES_MAX = 2000
@@ -21,21 +21,21 @@ f = Figlet(font='slant')
 
 
 def populate_users(db: BabblerDB):
-    with open('user_data/users') as users:
+    with open('../src/babbler/fake_user_data/users') as users:
         for user in users:
             user = user.replace('\n', '')
             username, public, password = user.split(', ', maxsplit=2)
-            shutil.copy(os.path.abspath('../static/placeholders/profile.jpg'),
-                        os.path.abspath('../static/images/' + str(username) + '.jpg'))
+            shutil.copy(os.path.abspath('../src/static/placeholders/profile.jpg'),
+                        os.path.abspath('../src/static/images/' + str(username) + '.jpg'))
             db.add_babbler(username, public, password)
     users.close()
 
 
 def populate_babbles(db: BabblerDB):
-    with open('user_data/users') as users, open('user_data/tags') as tags:
+    with open('../src/babbler/fake_user_data/users') as users, open('../src/babbler/fake_user_data/tags') as tags:
         lines = users.readlines()
         tags_lines = tags.readlines()
-        for i in range(BABBLES_MAX):
+        for i in range(6, BABBLES_MAX+5):
             message = f.renderText(tags_lines[randint(0, LINES_IN_FILES-1)].replace('\n', ''))
             tags = []
             for j in range(5):
