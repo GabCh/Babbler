@@ -13,11 +13,12 @@ class BabblerDB(object):
                                           cursorclass=pymysql.cursors.DictCursor)
 
     def add_babbler(self, username, publicName, password):
-        sql = "INSERT INTO Babbler.Babblers VALUES ( %s , %s , %s)"
+        sql = "INSERT INTO Babblers VALUES (%s , %s , %s)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (username, publicName, password))
                 self.connection.commit()
+            print('SUCCESS')
         except Exception as e:
             print(e)
 
@@ -181,7 +182,7 @@ class BabblerDB(object):
                 sql = """
                     SELECT B.username, B.publicName FROM Babblers B
                     WHERE B.username IN
-                    (SELECT F.followed FROM Follows F WHERE F.follower = %s);
+                    (SELECT F.follower FROM Follows F WHERE F.followed = %s);
                       """
                 cursor.execute(sql, (username,))
                 results = cursor.fetchall()
@@ -195,7 +196,7 @@ class BabblerDB(object):
                 sql = """
                     SELECT B.username, B.publicName FROM Babblers B
                     WHERE B.username IN
-                    (SELECT F.follower FROM Follows F WHERE F.followed = %s);
+                    (SELECT F.followed FROM Follows F WHERE F.follower = %s);
                       """
                 cursor.execute(sql, (username,))
                 results = cursor.fetchall()

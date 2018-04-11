@@ -17,12 +17,12 @@
         </div>
         <div>
         {% if followed == True %}
-            <form action="/unfollow/{{ user.username }}" method="post" class="card-footer-item">
-                <button type="submit" class="button is-info is-inverted is-rounded is-large" value="{{ user.username }}">Unfollow</button>
+            <form action="/unfollow/{{ user.username }}" method="post">
+                <button type="submit" class="button is-info is-inverted is-rounded is-large">Unfollow</button>
             </form>
         {% else %}
-            <form action="/follow/{{ user.username }}" method="post" class="card-footer-item">
-                <button type="submit" class="button is-info is-rounded is-large" value="{{ user.username }}">
+            <form action="/follow/{{ user.username }}" method="post">
+                <button type="submit" class="button is-info is-rounded is-large">
                     <span class="icon">
                         <i class="fas fa-plus"></i>
                     </span>
@@ -35,35 +35,51 @@
 </div>
 <div class="tabs is-centered is-medium">
     <ul id="tabs">
-        <li id="tab-babbles" class="is-active" onclick="showBabbles()">
+        <li id="tab-babbles" class="is-active" onclick="showBabblesTab()">
             <a>
                 <span class="icon">
                     <i class="fas fa-comment-alt"></i>
                 </span>
+                {% if babbles %}
                 <span>Babbles ({{ nb_babbles }})</span>
+                {% else %}
+                <span>Babbles (0)</span>
+                {% endif %}
             </a>
         </li>
-        <li id="tab-followers" onclick="showFollowers()">
+        <li id="tab-followers" onclick="showFollowersTab()">
             <a>
                 <span class="icon">
                     <i class="fas fa-users"></i>
                 </span>
+                {% if followers %}
                 <span>Followers ({{ nb_followers }})</span>
+                {% else %}
+                <span>Followers (0)</span>
+                {% endif %}
             </a>
         </li>
-        <li id="tab-subscriptions" onclick="showSubscriptions()">
+        <li id="tab-subscriptions" onclick="showSubscriptionsTab()">
             <a>
                 <span class="icon">
                     <i class="fas fa-clipboard-list"></i>
                 </span>
+                {% if subscriptions %}
                 <span>Subscriptions ({{ nb_subscriptions }})</span>
+                {% else %}
+                <span>Subscriptions (0)</span>
+                {% endif %}
             </a>
         </li>
     </ul>
 </div>
 <div class="container section">
     <div id="babbles">
+        {% if babbles %}
         <p class="title is-2 is-spaced">Babbles of {{ user.username }}</p>
+        {% else %}
+        <p class="title is-2 is-spaced">No babbles yet!</p>
+        {% endif %}
         {% for babble in babbles %}
         <div class="box">
             <article class="media">
@@ -103,11 +119,87 @@
         </div>
         {% endfor %}
     </div>
-    <div id="followers">
+    <div id="followers" style="display: none;">
+        {% if followers %}
         <p class="title is-2 is-spaced">Babblers who follow {{ user.username }}</p>
+        {% else %}
+        <p class="title is-2 is-spaced">No followers yet!</p>
+        {% endif %}
+        {% if followers|length > 0 %}
+        <div class="columns">
+            {% for babbler in followers %}
+            <div class="column is-one-quarter">
+                <a href="/babblers/{{ babbler.username }}">
+                    <div class="card">
+                        <div class="card-image">
+                            <figure class="image">
+                                <img src="{{ url_for('static', filename='images/') }}{{ babbler.username }}.jpg" alt="{{ babbler.username }}">
+                            </figure>
+                        </div>
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <figure class="image is-48x48">
+                                        <img src="{{ url_for('static', filename='images/') }}{{ babbler.username }}.jpg" alt="{{ babbler.username }}">
+                                    </figure>
+                                </div>
+                                <div class="content">
+                                    <p class="title is-4">{{ babbler.publicName }}</p>
+                                    <p class="subtitle is-6">@{{ babbler.username }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% if loop.index % 4 == 0 %}
+        </div>
+        <div class="columns">
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
-    <div id="subscriptions">
+    <div id="subscriptions" style="display: none;">
+        {% if subscriptions %}
         <p class="title is-2 is-spaced">Babblers followed by {{ user.username }}</p>
+        {% else %}
+        <p class="title is-2 is-spaced">No subscriptions yet!</p>
+        {% endif %}
+        {% if subscriptions|length > 0 %}
+        <div class="columns">
+            {% for babbler in subscriptions %}
+            <div class="column is-one-quarter">
+                <a href="/babblers/{{ babbler.username }}">
+                    <div class="card">
+                        <div class="card-image">
+                            <figure class="image">
+                                <img src="{{ url_for('static', filename='images/') }}{{ babbler.username }}.jpg" alt="{{ babbler.username }}">
+                            </figure>
+                        </div>
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <figure class="image is-48x48">
+                                        <img src="{{ url_for('static', filename='images/') }}{{ babbler.username }}.jpg" alt="{{ babbler.username }}">
+                                    </figure>
+                                </div>
+                                <div class="content">
+                                    <p class="title is-4">{{ babbler.publicName }}</p>
+                                    <p class="subtitle is-6">@{{ babbler.username }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% if loop.index % 4 == 0 %}
+        </div>
+        <div class="columns">
+        {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

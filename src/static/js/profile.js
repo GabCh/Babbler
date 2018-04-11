@@ -1,18 +1,18 @@
-function showBabbles() {
+function showBabblesTab() {
     document.getElementById('tab-followers').classList.remove('is-active')
     document.getElementById('tab-subscriptions').classList.remove('is-active')
     document.getElementById('tab-babbles').classList.add('is-active')
     displayBabbles()
 }
 
-function showFollowers() {
+function showFollowersTab() {
     document.getElementById('tab-subscriptions').classList.remove('is-active')
     document.getElementById('tab-babbles').classList.remove('is-active')
     document.getElementById('tab-followers').classList.add('is-active')
     displayFollowers()
 }
 
-function showSubscriptions() {
+function showSubscriptionsTab() {
     document.getElementById('tab-followers').classList.remove('is-active')
     document.getElementById('tab-babbles').classList.remove('is-active')
     document.getElementById('tab-subscriptions').classList.add('is-active')

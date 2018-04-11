@@ -56,14 +56,17 @@ def new_babble():
         return redirect('/login')
 
 
-@app.route('/delete/<user>', methods=['POST'])
+@app.route('/delete/<user>', methods=['GET', 'POST'])
 def delete(user):
     connected_user = 'username' in session
-    if connected_user and session['username'] == user:
-        session.pop('username', None)
-        db.remove_babbler(user)
-        os.remove('./static/images/' + str(user) + '.jpg')
-        return redirect('/login')
+    if request.method == 'POST':
+        if connected_user and session['username'] == user:
+            session.pop('username', None)
+            db.remove_babbler(user)
+            os.remove('./static/images/' + str(user) + '.jpg')
+            return redirect('/login')
+    else:
+        return render_template('/partials/delete_user.html', user=user, logged=True)
 
 
 @app.route('/follow/<other>', methods=['POST'])
@@ -90,7 +93,6 @@ def login():
         username = data['username']
         password = hashlib.pbkdf2_hmac('sha256', data['password'].encode(), salt.encode(), 65336)
         password = str(binascii.hexlify(password))[2:-1]
-        print(password)
 
         result = db.authenticate(username, password)
         if result:
@@ -124,7 +126,18 @@ def my_profile():
     if 'username' in session:
         user = {'username': session['username'], 'publicName': session['publicName']}
         babbles = db.read_user_babbles(user['username'])
-        return render_template('/partials/myprofile.html', user=user, babbles=babbles, logged=True)
+        followers = db.read_followers(user['username'])
+        subscriptions = db.read_subscriptions(user['username'])
+        followed = db.following(session['username'], user['username'])
+        nb_babbles = len(babbles)
+        nb_followers = len(followers)
+        nb_subscriptions = len(subscriptions)
+        view = render_template('/partials/myprofile.html', user=user,
+                               followed=followed, babbles=babbles, logged=True,
+                               followers=followers, subscriptions=subscriptions,
+                               nb_babbles=nb_babbles, nb_followers=nb_followers,
+                               nb_subscriptions=nb_subscriptions)
+        return view
     else:
         return redirect('/login')
 
@@ -153,6 +166,7 @@ def babbler_profile(username):
         nb_subscriptions = len(subscriptions)
         view = render_template('/partials/profile.html', user=user[0],
                                followed=followed, babbles=babbles, logged=True,
+                               followers=followers, subscriptions=subscriptions,
                                nb_babbles=nb_babbles, nb_followers=nb_followers,
                                nb_subscriptions=nb_subscriptions)
         return view
