@@ -35,7 +35,7 @@ def populate_babbles(db: BabblerDB):
     with open('../src/babbler/fake_user_data/users') as users, open('../src/babbler/fake_user_data/tags') as tags:
         lines = users.readlines()
         tags_lines = tags.readlines()
-        for i in range(5, BABBLES_MAX+5):
+        for i in range(6, BABBLES_MAX+5):
             message = f.renderText(tags_lines[randint(0, LINES_IN_FILES-1)].replace('\n', ''))
             tags = []
             for j in range(5):
