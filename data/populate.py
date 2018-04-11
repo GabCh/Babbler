@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['DB_HOST'] = 'localhost'
 app.config['DB_USER'] = 'root'
-app.config['DB_PASSWORD'] = 'b4bbl3r1saw3s0m3'
+app.config['DB_PASSWORD'] = 'babblerisawesome'
 app.config['DB_NAME'] = 'Babbler'
 
 BABBLES_MAX = 2000
