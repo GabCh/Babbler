@@ -4,7 +4,7 @@ function like(id){
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.onreadystatechange = function() {
         if(request.readyState == XMLHttpRequest.DONE){
-            document.getElementById("like" + id).innerHTML = request.responseText;
+            document.getElementById("like" + id).innerHTML = request.responseText + "&nbsp &nbsp";
         }
     }
     request.send("id=" + id);

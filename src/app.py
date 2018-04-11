@@ -200,5 +200,17 @@ def like_babble():
         return redirect('/login')
 
 
+@app.route('/comment', methods=['POST'])
+def comment_babble():
+    if 'username' in session:
+        data = request.form
+        babbleID = data['id']
+        commentID = str(db.generate_comment_id())
+        message = data['message']
+        db.add_comment(babbleID, commentID, session['username'], message, datetime.datetime.now())
+        return str(db.get_nbComments(babbleID))
+    else:
+        return redirect('/login')
+
 if __name__ == '__main__':
     app.run()

@@ -2,7 +2,7 @@ import shutil
 
 import os
 
-from data.babblerdb import BabblerDB
+from src.data.babblerdb import BabblerDB
 from random import randint
 from flask import Flask
 from pyfiglet import Figlet

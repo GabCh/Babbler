@@ -22,7 +22,7 @@ class BabblerDB(object):
             print(e)
 
     def add_babble(self, id, username, message, time_s, tags):
-        sql = "INSERT INTO Babbles VALUES (%s, %s, %s, %s, 0)"
+        sql = "INSERT INTO Babbles VALUES (%s, %s, %s, %s, 0, 0)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (id, username, message, time_s))
@@ -59,11 +59,11 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
-    def add_comment(self, babbleID, commentID, username, message):
-        sql = "INSERT INTO Comments VALUES (%s, %s, %s, %s)"
+    def add_comment(self, babbleID, commentID, username, message, time_s):
+        sql = "INSERT INTO Comments VALUES (%s, %s, %s, %s, %s)"
         try:
             with self.connection.cursor() as cursor:
-                cursor.execute(sql, (babbleID, commentID, username, message))
+                cursor.execute(sql, (babbleID, commentID, username, message, time_s))
                 self.connection.commit()
         except Exception as e:
             print(e)
@@ -95,7 +95,7 @@ class BabblerDB(object):
         try:
             with self.connection.cursor() as cursor:
                 sql = """
-                    SELECT B.id, B.username, B.message, B.time_s, B.nbLikes
+                    SELECT B.id, B.username, B.message, B.time_s, B.nbLikes, B.nbComments
                     FROM Babbles B, Follows F
                     WHERE F.follower LIKE %s AND F.followed = B.username OR B.username = %s
                     GROUP BY B.time_s DESC;"""
@@ -137,7 +137,10 @@ class BabblerDB(object):
             with self.connection.cursor() as cursor:
                 cursor.execute(sql)
                 result = cursor.fetchone()
-                return result['max_id'] + 1
+                if result['max_id'] is None:
+                    return 1
+                else:
+                    return result['max_id'] + 1
         except Exception as e:
             print(e)
 
@@ -147,7 +150,10 @@ class BabblerDB(object):
             with self.connection.cursor() as cursor:
                 cursor.execute(sql)
                 result = cursor.fetchone()
-                return result['max_id'] + 1
+                if result['max_id'] is None:
+                    return 1
+                else:
+                    return result['max_id'] + 1
         except Exception as e:
             print(e)
 
@@ -155,7 +161,7 @@ class BabblerDB(object):
         try:
             keyword = '%' + keyword + '%'
             with self.connection.cursor() as cursor:
-                sql = "SELECT id, username, message, time_s, nbLikes FROM Babbles WHERE message LIKE %s" \
+                sql = "SELECT id, username, message, time_s, nbLikes, nbComments FROM Babbles WHERE message LIKE %s" \
                       "GROUP BY Babbles.time_s DESC;"
                 cursor.execute(sql, (keyword,))
                 results = cursor.fetchall()
@@ -171,7 +177,7 @@ class BabblerDB(object):
     def read_babbles_with_tag(self, tag: str):
         try:
             with self.connection.cursor() as cursor:
-                sql = "SELECT id, username, message, time_s, nbLikes "\
+                sql = "SELECT id, username, message, time_s, nbLikes, nbComments "\
                       "FROM Babbles WHERE id IN (SELECT id FROM Tag WHERE tag = %s)" \
                       "GROUP BY Babbles.time_s DESC;"
                 cursor.execute(sql, (tag,))
@@ -188,7 +194,7 @@ class BabblerDB(object):
     def read_user_babbles(self, username: str):
         try:
             with self.connection.cursor() as cursor:
-                sql = "SELECT id, username, message, time_s, nbLikes "\
+                sql = "SELECT id, username, message, time_s, nbLikes, nbComments "\
                       "FROM Babbles WHERE username = %s" \
                       "GROUP BY Babbles.time_s DESC;"
                 cursor.execute(sql, (username,))
@@ -289,6 +295,16 @@ class BabblerDB(object):
                 cursor.execute(sql, (id,))
                 result = cursor.fetchone()
                 return result['nbLikes']
+        except Exception as e:
+            print(e)
+
+    def get_nbComments(self, id):
+        sql = "SELECT nbComments FROM Babbles WHERE id = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (id,))
+                result = cursor.fetchone()
+                return result['nbComments']
         except Exception as e:
             print(e)
 

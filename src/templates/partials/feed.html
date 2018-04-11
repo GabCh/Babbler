@@ -36,8 +36,8 @@
                          {% endfor %}
                 </div>
                     <nav class="level is-mobile">
-                        <div class="level-left">
-                            <a class="level-item" onclick="comment('{{ babble.id }}')">
+                        <div class="level">
+                            <a class="level-item" onclick="showOrHideCommentArea('{{ babble.id }}')">
                                 <span class="icon is-small"><i class="fas fa-reply"></i></span>
                             </a>
 
@@ -45,8 +45,19 @@
                                 <span class="icon is-small"><i class="fas fa-heart"></i></span>
                             </a>
                             <p id="like{{ babble.id }}">
-                                {{ babble.nbLikes }}
+                                {{ babble.nbLikes }} &nbsp &nbsp
                             </p>
+                            <a id="commentArea{{ babble.id }}" class="level-item"></a>
+                        </div>
+                        <div class="level-right">
+                            <a class="level-item">
+                                <span id="has-comment{{ babble.id }}" class="icon is-small"><i class="fa fa-ellipsis-h"></i></span>
+                                {% if babble.nbComments == 0 %}
+                                   <script>
+                                       hideHasComment({{ babble.id }});
+                                   </script>
+                                {% endif %}
+                            </a>
                         </div>
                     </nav>
                 </div>
