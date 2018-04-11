@@ -175,6 +175,34 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
+    def read_followers(self, username: str):
+        try:
+            with self.connection.cursor() as cursor:
+                sql = """
+                    SELECT B.username, B.publicName FROM Babblers B
+                    WHERE B.username IN
+                    (SELECT F.followed FROM Follows F WHERE F.follower = %s);
+                      """
+                cursor.execute(sql, (username,))
+                results = cursor.fetchall()
+                return results
+        except Exception as e:
+            print(e)
+
+    def read_subscriptions(self, username: str):
+        try:
+            with self.connection.cursor() as cursor:
+                sql = """
+                    SELECT B.username, B.publicName FROM Babblers B
+                    WHERE B.username IN
+                    (SELECT F.follower FROM Follows F WHERE F.followed = %s);
+                      """
+                cursor.execute(sql, (username,))
+                results = cursor.fetchall()
+                return results
+        except Exception as e:
+            print(e)
+
     def remove_follower(self, follower, followed):
         sql = "DELETE FROM Follows WHERE follower = %s AND followed = %s"
         try:

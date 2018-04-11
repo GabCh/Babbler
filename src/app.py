@@ -144,9 +144,17 @@ def babbler_profile(username):
         if session['username'] == username:
             return redirect('/myprofile')
         user = db.read_babblers(username)
-        followed = db.following(session['username'], username)
         babbles = db.read_user_babbles(username)
-        view = render_template('/partials/profile.html', user=user, followed=followed, babbles=babbles, logged=True)
+        followers = db.read_followers(username)
+        subscriptions = db.read_subscriptions(username)
+        followed = db.following(session['username'], username)
+        nb_babbles = len(babbles)
+        nb_followers = len(followers)
+        nb_subscriptions = len(subscriptions)
+        view = render_template('/partials/profile.html', user=user[0],
+                               followed=followed, babbles=babbles, logged=True,
+                               nb_babbles=nb_babbles, nb_followers=nb_followers,
+                               nb_subscriptions=nb_subscriptions)
         return view
     else:
         return redirect('/login')

@@ -1,84 +1,113 @@
 {% extends 'layout.html' %}
 
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/profile.css') }}">
+    <script src="{{ url_for('static', filename='js/profile.js') }}" type="text/javascript"></script>
+{% endblock %}
+
 {% block body %}
-<div class="section">
-    {% for babbler in user %}
-    <div class="card">
-        <div class="card-image">
-            <figure class="image is-4by3">
-                <img src="{{ url_for('static', filename='images/') }}{{ babbler.username }}.jpg" alt="{{ babbler.username }}">
-            </figure>
+<div class="hero is-primary">
+    <div class="hero-body container level">
+        <figure class="image is-256x256">
+            <img class="rounded" src="{{ url_for('static', filename='images/') }}{{ user.username }}.jpg" alt="{{ user.username }}">
+        </figure>
+        <div class="has-text-centered">
+            <p class="title is-2 is-spaced full-width">{{ user.publicName }}</p>
+            <p class="subtitle is-3">@{{ user.username }}</p>
         </div>
-        <div class="card-content">
-            <div class="media">
+        <div>
+        {% if followed == True %}
+            <form action="/unfollow/{{ user.username }}" method="post" class="card-footer-item">
+                <button type="submit" class="button is-info is-inverted is-rounded is-large" value="{{ user.username }}">Unfollow</button>
+            </form>
+        {% else %}
+            <form action="/follow/{{ user.username }}" method="post" class="card-footer-item">
+                <button type="submit" class="button is-info is-rounded is-large" value="{{ user.username }}">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>Follow</span>
+                </button>
+            </form>
+        {% endif %}
+        </div>
+    </div>
+</div>
+<div class="tabs is-centered is-medium">
+    <ul id="tabs">
+        <li id="tab-babbles" class="is-active" onclick="showBabbles()">
+            <a>
+                <span class="icon">
+                    <i class="fas fa-comment-alt"></i>
+                </span>
+                <span>Babbles ({{ nb_babbles }})</span>
+            </a>
+        </li>
+        <li id="tab-followers" onclick="showFollowers()">
+            <a>
+                <span class="icon">
+                    <i class="fas fa-users"></i>
+                </span>
+                <span>Followers ({{ nb_followers }})</span>
+            </a>
+        </li>
+        <li id="tab-subscriptions" onclick="showSubscriptions()">
+            <a>
+                <span class="icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </span>
+                <span>Subscriptions ({{ nb_subscriptions }})</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="container section">
+    <div id="babbles">
+        <p class="title is-2 is-spaced">Babbles of {{ user.username }}</p>
+        {% for babble in babbles %}
+        <div class="box">
+            <article class="media">
                 <div class="media-left">
-                    <figure class="image is-48x48">
-                        <img src="{{ url_for('static', filename='images/') }}{{ babbler.username }}.jpg" alt="{{ babbler.username }}">
+                    <figure class="image is-64x64">
+                        <a href="/babblers/{{ babble.username }}"><img src="{{ url_for('static', filename='images/') }}{{ babble.username }}.jpg" alt="{{ babble.username }}"></a>
                     </figure>
                 </div>
-                <div class="content">
-                    <p class="title is-4">{{ babbler.publicName }}</p>
-                    <p class="subtitle is-6">@{{ babbler.username }}</p>
+                <div class="media-content">
+                    <div class="content">
+                        <a href="/babblers/{{ babble.username }}">
+                            <strong>@{{ babble.username }}</strong>
+                        </a>
+                        <small>
+                            {{ babble.elapsed }} ago
+                        </small>
+                        <br>
+                        <div style="white-space:pre-line;">
+                            {{ babble.message }}
+                        </div>
+                        {% for tag in babble.tags %}
+                         <a href="/tag/{{ tag.tag }}">#{{tag.tag}}</a>
+                        {% endfor %}
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+                            <a class="level-item">
+                                <span class="icon is-small"><i class="fas fa-reply"></i></span>
+                            </a>
+                            <a class="level-item">
+                                <span class="icon is-small"><i class="fas fa-heart"></i></span>
+                            </a>
+                        </div>
+                    </nav>
                 </div>
-            </div>
+            </article>
         </div>
-        <footer class="card-footer ">
-            {% if followed == True %}
-                <form action="/unfollow/{{ babbler.username }}" method="post" class="card-footer-item">
-                    <button type="submit" name="other" value="{{ babbler.username }}"
-                            style="color: #3273dc;font-size:1rem;font-weight: 400;background-color: Transparent;background-repeat:no-repeat;border: none;cursor:pointer;overflow: hidden;outline:none;">Unfollow</button>
-                </form>
-            {% else %}
-                <form action="/follow/{{ babbler.username }}" method="post" class="card-footer-item">
-                    <button type="submit" name="other" value="{{ babbler.username }}"
-                            style="color: #3273dc;font-size:1rem;font-weight: 400;background-color: Transparent;background-repeat:no-repeat;border: none;cursor:pointer;overflow: hidden;outline:none;">Follow</button>
-                </form>
-            {% endif %}
-        </footer>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
-<div class="section">
-    {% for babbler in user %}
-    <p class="title is-2 is-spaced">Babbles of {{ babbler.username }}</p>
-    {% endfor %}
-    {% for babble in babbles %}
-    <div class="box">
-        <article class="media">
-            <div class="media-left">
-                <figure class="image is-64x64">
-                    <a href="/babblers/{{ babble.username }}"><img src="{{ url_for('static', filename='images/') }}{{ babble.username }}.jpg" alt="{{ babble.username }}"></a>
-                </figure>
-            </div>
-            <div class="media-content">
-                <div class="content">
-                    <a href="/babblers/{{ babble.username }}">
-                        <strong>@{{ babble.username }}</strong>
-                    </a>
-                    <small>
-                        {{ babble.elapsed }} ago
-                    </small>
-                    <br>
-                    <div style="white-space:pre-line;">
-                        {{ babble.message }}
-                    </div>
-                    {% for tag in babble.tags %}
-                     <a href="/tag/{{ tag.tag }}">#{{tag.tag}}</a>
-                    {% endfor %}
-                </div>
-                <nav class="level is-mobile">
-                    <div class="level-left">
-                        <a class="level-item">
-                            <span class="icon is-small"><i class="fas fa-reply"></i></span>
-                        </a>
-                        <a class="level-item">
-                            <span class="icon is-small"><i class="fas fa-heart"></i></span>
-                        </a>
-                    </div>
-                </nav>
-            </div>
-        </article>
+    <div id="followers">
+        <p class="title is-2 is-spaced">Babblers who follow {{ user.username }}</p>
     </div>
-    {% endfor %}
+    <div id="subscriptions">
+        <p class="title is-2 is-spaced">Babblers followed by {{ user.username }}</p>
+    </div>
 </div>
 {% endblock %}
