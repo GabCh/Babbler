@@ -5,8 +5,8 @@ import os
 import shutil
 
 from flask import Flask, render_template, request, session, redirect
-from src.data.babblerdb import BabblerDB
-from src.data.utils import crop_tags_in_message
+from src.babbler.babblerdb import BabblerDB
+from src.babbler.utils import crop_tags_in_message
 
 
 app = Flask(__name__)
@@ -18,7 +18,7 @@ app.secret_key = 'YmxhemVpdDQyMA=='
 # Config data for DB
 app.config['DB_HOST'] = 'localhost'
 app.config['DB_USER'] = 'root'
-app.config['DB_PASSWORD'] = 'choupi'
+app.config['DB_PASSWORD'] = 'babblerisawesome'
 app.config['DB_NAME'] = 'Babbler'
 db = BabblerDB(app)
 
@@ -191,6 +191,8 @@ def search_form():
         if keyword:
             babbles = db.read_babbles(keyword)
             babblers = db.read_babblers(keyword)
+            babbles_with_tag = db.read_babbles_with_tag(keyword)
+            babbles.extend(babbles_with_tag)
             return render_template('/partials/search_results.html',
                                    keyword=keyword, babbles=babbles,
                                    babblers=babblers, logged=True)

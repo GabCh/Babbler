@@ -1,5 +1,5 @@
 import pymysql.cursors
-from src.data.utils import get_elapsed_time
+from src.babbler.utils import get_elapsed_time
 
 
 class BabblerDB(object):
@@ -117,7 +117,10 @@ class BabblerDB(object):
                     elapsed = get_elapsed_time(result['time_s'])
                     result['elapsed'] = elapsed
                     result['tags'] = self.read_tags(result['id'])
-                return results
+                if results:
+                    return results
+                else:
+                    return []
         except Exception as e:
             print(e)
 
@@ -134,7 +137,10 @@ class BabblerDB(object):
                     elapsed = get_elapsed_time(result['time_s'])
                     result['elapsed'] = elapsed
                     result['tags'] = self.read_tags(result['id'])
-                return results
+                if results:
+                    return results
+                else:
+                    return []
         except Exception as e:
             print(e)
 
@@ -151,7 +157,10 @@ class BabblerDB(object):
                     elapsed = get_elapsed_time(result['time_s'])
                     result['elapsed'] = elapsed
                     result['tags'] = self.read_tags(result['id'])
-                return results
+                if results:
+                    return results
+                else:
+                    return []
         except Exception as e:
             print(e)
 
@@ -161,7 +170,10 @@ class BabblerDB(object):
                 sql = "SELECT DISTINCT tag FROM Tag WHERE id = %s"
                 cursor.execute(sql, (babble_id,))
                 results = cursor.fetchall()
-                return results
+                if results:
+                    return results
+                else:
+                    return []
         except Exception as e:
             print(e)
 
@@ -172,7 +184,10 @@ class BabblerDB(object):
                 sql = "SELECT username, publicName FROM Babblers WHERE username LIKE %s"
                 cursor.execute(sql, (keyword,))
                 results = cursor.fetchall()
-                return results
+                if results:
+                    return results
+                else:
+                    return []
         except Exception as e:
             print(e)
 
@@ -186,7 +201,10 @@ class BabblerDB(object):
                       """
                 cursor.execute(sql, (username,))
                 results = cursor.fetchall()
-                return results
+                if results:
+                    return results
+                else:
+                    return []
         except Exception as e:
             print(e)
 
@@ -200,7 +218,10 @@ class BabblerDB(object):
                       """
                 cursor.execute(sql, (username,))
                 results = cursor.fetchall()
-                return results
+                if results:
+                    return results
+                else:
+                    return []
         except Exception as e:
             print(e)
 

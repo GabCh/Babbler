@@ -1,6 +1,6 @@
 CREATE DATABASE Babbler;
 USE Babbler;
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'choupi';
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'babblerisawesome';
 set global sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 
 CREATE TABLE IF NOT EXISTS Babblers(username char(32),
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Babbles(id integer,
                      message TEXT, 
                      time_s TIMESTAMP, 
                      PRIMARY KEY(id), 
-                     FOREIGN KEY(username) REFERENCES Babblers(username));
+                     FOREIGN KEY(username) REFERENCES Babblers(username) ON DELETE CASCADE);
                                         
 
 CREATE TABLE IF NOT EXISTS Tag(id integer,
