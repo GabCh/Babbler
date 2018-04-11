@@ -5,8 +5,8 @@ import os
 import shutil
 
 from flask import Flask, render_template, request, session, redirect
-from src.data.babblerdb import BabblerDB
-from src.data.utils import crop_tags_in_message
+from src.babbler.babblerdb import BabblerDB
+from src.babbler.utils import crop_tags_in_message
 
 
 app = Flask(__name__)
