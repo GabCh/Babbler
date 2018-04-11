@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['DB_HOST'] = 'localhost'
 app.config['DB_USER'] = 'root'
-app.config['DB_PASSWORD'] = 'choupi'
+app.config['DB_PASSWORD'] = 'b4bbl3r1saw3s0m3'
 app.config['DB_NAME'] = 'Babbler'
 
 BABBLES_MAX = 2000
@@ -35,7 +35,7 @@ def populate_babbles(db: BabblerDB):
     with open('../src/babbler/fake_user_data/users') as users, open('../src/babbler/fake_user_data/tags') as tags:
         lines = users.readlines()
         tags_lines = tags.readlines()
-        for i in range(BABBLES_MAX):
+        for i in range(5, BABBLES_MAX+5):
             message = f.renderText(tags_lines[randint(0, LINES_IN_FILES-1)].replace('\n', ''))
             tags = []
             for j in range(5):

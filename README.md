@@ -10,12 +10,12 @@ sudo pip3 install virtualenv
 virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
-mysql -u root -p < doc/dump.sql
+mysql -u root -p < data/dump.sql
 ```
 
-Par la suite, exécuter le fichier src/data/populate.py dans votre IDE. Celui-ci s'occupera d'ajouter des données au projet.
+Par la suite, exécuter le fichier ```data/populate.py``` dans votre IDE. Celui-ci s'occupera d'ajouter des données au projet.
 
-Finalement, il suffit de lancer l'application avec le fichier src/app.py.
+Finalement, il suffit de lancer l'application avec le fichier ```src/app.py```.
 
 (le main se trouve à la fin des deux fichiers)
 
