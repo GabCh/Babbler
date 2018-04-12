@@ -3,7 +3,7 @@
 {% block body %}
 <div class="section">
     {% if babbles|length > 0 %}
-    <p class="title is-2 is-spaced">Babbles results for : {{ keyword }}</p>
+        <p class="title is-2 is-spaced">Babbles results for : {{ keyword }}</p>
         {% for babble in babbles %}
         <div class="box">
           <article class="media">
@@ -17,7 +17,7 @@
                   <p>
                       <a href="/babblers/{{ babble.username }}"><strong>@{{ babble.username }}</strong></a> <small>{{ babble.elapsed }} ago</small>
                       <br>
-                      <div style="white-space:pre-line;">
+                      <div style="white-space: pre-line;">
                       {{ babble.message }}
                       </div>
                       {% for tag in babble.tags %}
@@ -44,37 +44,40 @@
         {% endfor %}
     {% endif %}
     {% if babblers|length > 0 %}
-    <p class="title is-2 is-spaced">Babblers results for : {{ keyword }}</p>
-    <div class="columns">
-        {% for babbler in babblers %}
-        <div class="column is-one-quarter">
-            <a href="/babblers/{{ babbler.username }}"><div class="card">
-              <div class="card-image">
-                <figure class="image is-4by3">
-                  <img src="{{ url_for('static', filename='images/') }}{{ babbler.username }}.jpg" alt="{{ babbler.username }}">
-                </figure>
-              </div>
-              <div class="card-content">
-                <div class="media">
-                  <div class="media-left">
-                    <figure class="image is-48x48">
+        <p class="title is-2 is-spaced">Babblers results for : {{ keyword }}</p>
+        <div class="columns">
+            {% for babbler in babblers %}
+            <div class="column is-one-quarter">
+                <a href="/babblers/{{ babbler.username }}"><div class="card">
+                  <div class="card-image">
+                    <figure class="image is-square">
                       <img src="{{ url_for('static', filename='images/') }}{{ babbler.username }}.jpg" alt="{{ babbler.username }}">
                     </figure>
                   </div>
-                  <div class="content">
-                    <p class="title is-4">{{ babbler.publicName }}</p>
-                    <p class="subtitle is-6">@{{ babbler.username }}</p>
+                  <div class="card-content">
+                    <div class="media">
+                      <div class="media-left">
+                        <figure class="image is-48x48">
+                          <img src="{{ url_for('static', filename='images/') }}{{ babbler.username }}.jpg" alt="{{ babbler.username }}">
+                        </figure>
+                      </div>
+                      <div class="content">
+                        <p class="title is-4">{{ babbler.publicName }}</p>
+                        <p class="subtitle is-6">@{{ babbler.username }}</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </div></a>
+                </div></a>
+            </div>
+            {% if loop.index % 4 == 0 %}
         </div>
-        {% if loop.index % 4 == 0 %}
-    </div>
-    <div class="columns">
-        {% endif %}
-        {% endfor %}
-    </div>
+        <div class="columns">
+            {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if babblers|length == 0 and babbles|length == 0%}
+        <p class="title is-2 is-spaced">Oops! No results found for keyword {{ keyword }}</p>
     {% endif %}
 </div>
 {% endblock %}

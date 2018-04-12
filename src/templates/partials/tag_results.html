@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block body %}
-<div class="section">
+<div class="section container">
     <p class="title is-2 is-spaced">Babbles using #{{ tag }}: </p>
     {% for babble in babbles %}
     <div class="box">
@@ -16,7 +16,7 @@
               <p>
                   <a href="/babblers/{{ babble.username }}"><strong>@{{ babble.username }}</strong></a> <small>{{ babble.elapsed }} ago</small>
                   <br>
-                  <div style="white-space:pre-line;">
+                  <div style="white-space: pre-line;">
                   {{ babble.message }}
                   </div>
                   {% for tag in babble.tags %}

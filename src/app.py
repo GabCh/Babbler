@@ -4,9 +4,9 @@ import datetime
 import os
 import shutil
 
-from flask import Flask, render_template, request, session, url_for, redirect
-from src.data.babblerdb import BabblerDB
-from src.data.utils import crop_tags_in_message
+from flask import Flask, render_template, request, session, redirect
+from src.babbler.babblerdb import BabblerDB
+from src.babbler.utils import crop_tags_in_message
 
 
 app = Flask(__name__)
@@ -18,7 +18,7 @@ app.secret_key = 'YmxhemVpdDQyMA=='
 # Config data for DB
 app.config['DB_HOST'] = 'localhost'
 app.config['DB_USER'] = 'root'
-app.config['DB_PASSWORD'] = 'choupi'
+app.config['DB_PASSWORD'] = 'babblerisawesome'
 app.config['DB_NAME'] = 'Babbler'
 db = BabblerDB(app)
 
@@ -40,27 +40,33 @@ def main():
         return redirect('/login')
 
 
-@app.route('/new-babble', methods=['POST'])
+@app.route('/new-babble', methods=['GET', 'POST'])
 def new_babble():
     if 'username' in session:
-        data = request.form
-        message = data['babble']
-        tags, message = crop_tags_in_message(message)
-        id = db.generate_babble_id()
-        db.add_babble(id, session['username'], message, datetime.datetime.now(), tags)
-        return redirect('/myfeed')
+        if request.method == 'POST':
+            data = request.form
+            message = data['babble']
+            tags, message = crop_tags_in_message(message)
+            id = db.generate_babble_id()
+            db.add_babble(id, session['username'], message, datetime.datetime.now(), tags)
+            return redirect('/myfeed')
+        else:
+            return render_template('/partials/newbabble.html', logged=True)
     else:
         return redirect('/login')
 
 
-@app.route('/delete/<user>', methods=['POST'])
+@app.route('/delete/<user>', methods=['GET', 'POST'])
 def delete(user):
     connected_user = 'username' in session
-    if connected_user and session['username'] == user:
-        session.pop('username', None)
-        db.remove_babbler(user)
-        os.remove('./static/images/' + str(user) + '.jpg')
-        return redirect('/login')
+    if request.method == 'POST':
+        if connected_user and session['username'] == user:
+            session.pop('username', None)
+            db.remove_babbler(user)
+            os.remove('./static/images/' + str(user) + '.jpg')
+            return redirect('/login')
+    else:
+        return render_template('/partials/delete_user.html', user=user, logged=True)
 
 
 @app.route('/follow/<other>', methods=['POST'])
@@ -120,7 +126,18 @@ def my_profile():
     if 'username' in session:
         user = {'username': session['username'], 'publicName': session['publicName']}
         babbles = db.read_user_babbles(user['username'])
-        return render_template('/partials/myprofile.html', user=user, babbles=babbles, logged=True)
+        followers = db.read_followers(user['username'])
+        subscriptions = db.read_subscriptions(user['username'])
+        followed = db.following(session['username'], user['username'])
+        nb_babbles = len(babbles)
+        nb_followers = len(followers)
+        nb_subscriptions = len(subscriptions)
+        view = render_template('/partials/myprofile.html', user=user,
+                               followed=followed, babbles=babbles, logged=True,
+                               followers=followers, subscriptions=subscriptions,
+                               nb_babbles=nb_babbles, nb_followers=nb_followers,
+                               nb_subscriptions=nb_subscriptions)
+        return view
     else:
         return redirect('/login')
 
@@ -129,7 +146,7 @@ def my_profile():
 def feed():
     if 'username' in session:
         babbles = db.get_babbles_from_followed_babblers(session['username'])
-        return render_template('/partials/feed.html', babbles=babbles, logged=True)
+        return render_template('/partials/myfeed.html', babbles=babbles, logged=True)
     else:
         return redirect('/login')
 
@@ -140,9 +157,18 @@ def babbler_profile(username):
         if session['username'] == username:
             return redirect('/myprofile')
         user = db.read_babblers(username)
-        followed = db.following(session['username'], username)
         babbles = db.read_user_babbles(username)
-        view = render_template('/partials/profile.html', user=user, followed=followed, babbles=babbles, logged=True)
+        followers = db.read_followers(username)
+        subscriptions = db.read_subscriptions(username)
+        followed = db.following(session['username'], username)
+        nb_babbles = len(babbles)
+        nb_followers = len(followers)
+        nb_subscriptions = len(subscriptions)
+        view = render_template('/partials/profile.html', user=user[0],
+                               followed=followed, babbles=babbles, logged=True,
+                               followers=followers, subscriptions=subscriptions,
+                               nb_babbles=nb_babbles, nb_followers=nb_followers,
+                               nb_subscriptions=nb_subscriptions)
         return view
     else:
         return redirect('/login')
@@ -165,6 +191,8 @@ def search_form():
         if keyword:
             babbles = db.read_babbles(keyword)
             babblers = db.read_babblers(keyword)
+            babbles_with_tag = db.read_babbles_with_tag(keyword)
+            babbles.extend(babbles_with_tag)
             return render_template('/partials/search_results.html',
                                    keyword=keyword, babbles=babbles,
                                    babblers=babblers, logged=True)
@@ -177,7 +205,6 @@ def search_form():
 
 
 # Validate if <username> is already taken.
-
 @app.route('/users/<username>', methods=['GET'])
 def get_user(username):
     exists = False
