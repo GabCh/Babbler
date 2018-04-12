@@ -4,7 +4,7 @@ import datetime
 import os
 import shutil
 
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, jsonify
 from src.babbler.babblerdb import BabblerDB
 from src.babbler.utils import crop_tags_in_message
 
@@ -213,7 +213,7 @@ def get_user(username):
     return str(exists)
 
 
-@app.route('/like', methods=['GET', 'POST'])
+@app.route('/like', methods=['POST'])
 def like_babble():
     if 'username' in session:
         data = request.form
@@ -231,11 +231,24 @@ def like_babble():
 def comment_babble():
     if 'username' in session:
         data = request.form
+        message = data['message']
+        if len(message) == 0:
+            return str("empty comment")
         babbleID = data['id']
         commentID = str(db.generate_comment_id())
-        message = data['message']
         db.add_comment(babbleID, commentID, session['username'], message, datetime.datetime.now())
         return str(db.get_nbComments(babbleID))
+    else:
+        return redirect('/login')
+
+
+@app.route('/getComments', methods=['POST'])
+def get_comments():
+    if 'username' in session:
+        data = request.form
+        babbleID = data['id']
+        comments = db.get_comments_of_babble(babbleID)
+        return jsonify({'response': comments})
     else:
         return redirect('/login')
 

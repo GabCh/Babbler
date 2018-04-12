@@ -99,7 +99,7 @@ class BabblerDB(object):
                     SELECT B.id, B.username, B.message, B.time_s, B.nbLikes, B.nbComments
                     FROM Babbles B, Follows F
                     WHERE F.follower LIKE %s AND F.followed = B.username OR B.username = %s
-                    GROUP BY B.time_s DESC;"""
+                    GROUP BY B.time_s DESC, B.username;"""
                 cursor.execute(sql, (username, username,))
                 results = cursor.fetchall()
                 for result in results:
@@ -119,15 +119,15 @@ class BabblerDB(object):
                     SELECT B.commentID, B.username, B.message, B.time_s
                     FROM Comments B
                     WHERE B.babbleID = %s
-                    GROUP BY B.time_s DESC;"""
+                    GROUP BY B.time_s DESC, B.username;"""
                 cursor.execute(sql, (babbleID,))
                 results = cursor.fetchall()
+                if not results:
+                    return []
                 for result in results:
                     result['time_s'] = "{}".format(result['time_s'])
                     result['elapsed'] = get_elapsed_time(result['time_s'])
-                    result['tags'] = self.read_tags(result['id'])
-                if not results:
-                    return []
+                    #result['tags'] = self.read_tags(result['id'])
                 return results
         except Exception as e:
             print(e)
@@ -163,7 +163,7 @@ class BabblerDB(object):
             keyword = '%' + keyword + '%'
             with self.connection.cursor() as cursor:
                 sql = "SELECT id, username, message, time_s, nbLikes, nbComments FROM Babbles WHERE message LIKE %s" \
-                      "GROUP BY Babbles.time_s DESC;"
+                      "GROUP BY Babbles.time_s DESC, Babbles.username;"
                 cursor.execute(sql, (keyword,))
                 results = cursor.fetchall()
                 for result in results:
@@ -183,7 +183,7 @@ class BabblerDB(object):
             with self.connection.cursor() as cursor:
                 sql = "SELECT * "\
                       "FROM Babbles WHERE id IN (SELECT DISTINCT id FROM Tag WHERE tag = %s)" \
-                      "GROUP BY Babbles.username, Babbles.time_s DESC;"
+                      "GROUP BY Babbles.time_s DESC, Babbles.username;"
                 cursor.execute(sql, (tag,))
                 results = cursor.fetchall()
                 for result in results:
@@ -203,7 +203,7 @@ class BabblerDB(object):
             with self.connection.cursor() as cursor:
                 sql = "SELECT id, username, message, time_s, nbLikes, nbComments "\
                       "FROM Babbles WHERE username = %s" \
-                      "GROUP BY Babbles.time_s DESC;"
+                      "GROUP BY Babbles.time_s DESC, Babbles.username;"
                 cursor.execute(sql, (username,))
                 results = cursor.fetchall()
                 for result in results:

@@ -22,10 +22,10 @@
                          {% for tag in babble.tags %}
                             <a href="/tag/{{ tag.tag }}">#{{tag.tag}}</a>
                          {% endfor %}
-                </div>
+                    </div>
                     <nav class="level is-mobile">
                         <div class="level">
-                            <a class="level-item" onclick="showOrHideCommentArea('{{ babble.id }}')">
+                            <a class="level-item" onclick="showOrHideCommentArea('{{ babble.id }}', {{ babbles|safe }})">
                                 <span class="icon is-small"><i class="fas fa-reply"></i></span>
                             </a>
 
@@ -39,7 +39,9 @@
                         </div>
                         <div class="level-right">
                             <a class="level-item">
-                                <span id="has-comment{{ babble.id }}" class="icon is-small"><i class="fa fa-ellipsis-h"></i></span>
+                                <span id="has-comment{{ babble.id }}" class="icon is-small" onclick="showHideComments({{ babble }})">
+                                    <i class="fa fa-ellipsis-h"></i>
+                                </span>
                                 {% if babble.nbComments == 0 %}
                                    <script>
                                        hideHasComment({{ babble.id }});
@@ -50,6 +52,7 @@
                     </nav>
                 </div>
             </article>
+            <div id="showComments{{ babble.id }}" style="display: none;"></div>
         </div>
     {% endfor %}
     </div>
