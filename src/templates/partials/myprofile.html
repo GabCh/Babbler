@@ -103,9 +103,12 @@
                             <a class="level-item">
                                 <span class="icon is-small"><i class="fas fa-reply"></i></span>
                             </a>
-                            <a class="level-item">
+                            <a class="level-item" onclick="like('{{ babble.id }}')">
                                 <span class="icon is-small"><i class="fas fa-heart"></i></span>
                             </a>
+                            <p id="like{{ babble.id }}">
+                                {{ babble.nbLikes }} &nbsp &nbsp
+                            </p>
                         </div>
                     </nav>
                 </div>
