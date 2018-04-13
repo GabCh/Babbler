@@ -20,9 +20,8 @@ CREATE TABLE IF NOT EXISTS Babbles(id integer,
                                         
 
 CREATE TABLE IF NOT EXISTS Tag(id integer,
-				 tag char(32),
-				 FOREIGN KEY(id) REFERENCES Babbles(id) ON DELETE CASCADE);
-                 
+							   tag char(32),
+							   FOREIGN KEY(id) REFERENCES Babbles(id) ON DELETE CASCADE);                               
 
 
 CREATE TABLE IF NOT EXISTS Follows(follower char(32),
@@ -49,6 +48,7 @@ CREATE TABLE IF NOT EXISTS CommentLikes(id integer,
 										username char(12),
 										FOREIGN KEY(id) REFERENCES Comments(commentID) ON DELETE CASCADE,
 										FOREIGN KEY(username) REFERENCES Babblers(username) ON DELETE CASCADE);
+                                        
 
 delimiter //
 CREATE TRIGGER likeBabble 

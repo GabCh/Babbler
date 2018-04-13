@@ -1,4 +1,3 @@
-
 function showOrHideCommentArea(id, babbles){
     if(document.getElementById("commentArea" + id).childNodes.length <= 0){
         var commentArea = document.createElement('TEXTAREA');
@@ -61,6 +60,11 @@ function getComments(babbleID, comments){
     request.send("id=" + babbleID);
 }
 
+function link_comment_tags(message){
+    message = message.replace(/#([a-z\d_]+)/ig, "<a href=\"/tag/$1\">#$1</a>");
+    return message;
+}
+
 function likeComment(commentID){
     var request = new XMLHttpRequest();
     request.open('POST', '/likeComment', true);
@@ -97,7 +101,7 @@ function createCommentCard(babbleID, comment){
 
     var message = document.createElement("div");
     message.setAttribute('style', 'white-space: pre-line;');
-    message.innerHTML = comment['message'];
+    message.innerHTML = link_comment_tags(comment['message']);
 
     var p1 = document.createElement("P");
     p1.appendChild(username);
