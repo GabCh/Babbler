@@ -15,13 +15,11 @@
                             <a href="/babblers/{{ babble.username }}"><strong>@{{ babble.username }}</strong></a>
                             <small>{{ babble.elapsed }} ago</small>
                         <br>
-                            <div style="white-space: pre-line;">
-                                {{ babble.message }}
-                            </div>
+                            <div style="white-space: pre-line;" id="linkTags{{ babble.id }}"></div>
+                            <script type="text/javascript">
+                                document.getElementById("linkTags{{ babble.id }}").innerHTML = link_tags("{{ babble.message }}", {{ babble.tags|safe }});
+                            </script>
                         </p>
-                         {% for tag in babble.tags %}
-                            <a href="/tag/{{ tag.tag }}">#{{tag.tag}}</a>
-                         {% endfor %}
                     </div>
                     <nav class="level is-mobile">
                         <div class="level-left">

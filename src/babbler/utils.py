@@ -60,7 +60,7 @@ def get_elapsed_time(date_str: str):
     return elapsed
 
 
-def crop_tags_in_message(message: str):
+def get_tags_in_message(message: str):
     regex = r"\B\#\w+"
     matches = re.finditer(regex, message)
     tags = []
@@ -68,6 +68,6 @@ def crop_tags_in_message(message: str):
         hashtag = match.group()
         tag = hashtag.replace('#', '')
         tags.append(tag)
-    message = re.sub(regex, '', message)
-    return tags, message
+    return tags
+
 

@@ -6,7 +6,7 @@ import shutil
 
 from flask import Flask, render_template, request, session, redirect, jsonify
 from src.babbler.babblerdb import BabblerDB
-from src.babbler.utils import crop_tags_in_message
+from src.babbler.utils import get_tags_in_message
 
 
 app = Flask(__name__)
@@ -46,7 +46,7 @@ def new_babble():
         if request.method == 'POST':
             data = request.form
             message = data['babble']
-            tags, message = crop_tags_in_message(message)
+            tags = get_tags_in_message(message)
             id = db.generate_babble_id()
             db.add_babble(id, session['username'], message, datetime.datetime.now(), tags)
             return redirect('/myfeed')
