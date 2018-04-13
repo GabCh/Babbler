@@ -227,6 +227,20 @@ def like_babble():
         return redirect('/login')
 
 
+@app.route('/likeComment', methods=['POST'])
+def like_comment():
+    if 'username' in session:
+        data = request.form
+        commentID = data['commentID']
+        if db.already_liked_this_comment(commentID, session['username']):
+            db.remove_comment_like(commentID, session['username'])
+        else:
+            db.add_comment_like(commentID, session['username'])
+        return str(db.get_comment_nbLikes(commentID))
+    else:
+        return redirect('/login')
+
+
 @app.route('/comment', methods=['POST'])
 def comment_babble():
     if 'username' in session:

@@ -18,7 +18,6 @@ class BabblerDB(object):
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (username, publicName, password))
                 self.connection.commit()
-            print('SUCCESS')
         except Exception as e:
             print(e)
 
@@ -60,8 +59,17 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
+    def add_comment_like(self, commentID, username):
+        sql = "INSERT INTO CommentLikes VALUES (%s, %s)"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (commentID, username))
+                self.connection.commit()
+        except Exception as e:
+            print(e)
+
     def add_comment(self, babbleID, commentID, username, message, time_s):
-        sql = "INSERT INTO Comments VALUES (%s, %s, %s, %s, %s)"
+        sql = "INSERT INTO Comments VALUES (%s, %s, %s, %s, %s, 0)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (babbleID, commentID, username, message, time_s))
@@ -116,7 +124,7 @@ class BabblerDB(object):
         try:
             with self.connection.cursor() as cursor:
                 sql = """
-                    SELECT B.commentID, B.username, B.message, B.time_s
+                    SELECT B.commentID, B.username, B.message, B.time_s, nbLikes
                     FROM Comments B
                     WHERE B.babbleID = %s
                     GROUP BY B.time_s DESC, B.username;"""
@@ -306,6 +314,15 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
+    def remove_comment_like(self, commentID, username):
+        sql = "DELETE FROM CommentLikes WHERE id = %s AND username = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (commentID, username))
+                self.connection.commit()
+        except Exception as e:
+            print(e)
+
     def remove_comment(self, commentID):
         sql = "DELETE FROM Comments WHERE commentID = %s"
         try:
@@ -338,11 +355,34 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
+    def already_liked_this_comment(self, commentID, username):
+        sql = "SELECT username FROM CommentLikes WHERE id = %s AND username = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (commentID, username))
+                results = cursor.fetchall()
+                if len(results) == 0:
+                    return False
+                else:
+                    return True
+        except Exception as e:
+            print(e)
+
     def get_nbLikes(self, id):
         sql = "SELECT nbLikes FROM Babbles WHERE id = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (id,))
+                result = cursor.fetchone()
+                return result['nbLikes']
+        except Exception as e:
+            print(e)
+
+    def get_comment_nbLikes(self, commentID):
+        sql = "SELECT nbLikes FROM Comments WHERE commentID = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (commentID,))
                 result = cursor.fetchone()
                 return result['nbLikes']
         except Exception as e:

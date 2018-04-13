@@ -1,3 +1,4 @@
+
 function showOrHideCommentArea(id, babbles){
     if(document.getElementById("commentArea" + id).childNodes.length <= 0){
         var commentArea = document.createElement('TEXTAREA');
@@ -32,7 +33,6 @@ function sendComment(id){
             request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             request.onreadystatechange = function() {
                 if(request.readyState == XMLHttpRequest.DONE){
-                    console.log(request.responseText);
                     document.getElementById("commentArea" + id).innerHTML = "";
                     document.getElementById("has-comment" + id).style.display = '';
                     hideComments(id);
@@ -60,8 +60,21 @@ function getComments(babbleID, comments){
     request.send("id=" + babbleID);
 }
 
+function likeComment(commentID){
+    var request = new XMLHttpRequest();
+    request.open('POST', '/likeComment', true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.onreadystatechange = function() {
+        if(request.readyState == XMLHttpRequest.DONE){
+            document.getElementById("commentLike" + commentID).innerHTML = "&nbsp"+request.responseText + "&nbsp &nbsp";
+        }
+    }
+    request.send("commentID=" + commentID);
+}
+
 /***************** WARNING : BIG MONSTER *****************/
 function createCommentCard(babbleID, comment){
+    /************* PICTURE *****************/
     var img = document.createElement("IMG");
     img.setAttribute('src', '/static/images/'+comment['username']+'.jpg');
 
@@ -73,7 +86,7 @@ function createCommentCard(babbleID, comment){
     media_left.setAttribute('class', 'media-left');
     media_left.appendChild(figure);
 
-    /****************************************/
+    /********* NAME TIME AND MESSAGE **********/
     var username = document.createElement("a");
     username.setAttribute('href', '/babblers/'+comment['username']);
     username.innerHTML = "<strong>@" + comment['username']+"</strong>";
@@ -95,9 +108,37 @@ function createCommentCard(babbleID, comment){
     content.setAttribute('class', 'content');
     content.appendChild(p1);
 
+    /************** LIKES *****************/
+    var fas_fa_heart = document.createElement("I");
+    fas_fa_heart.setAttribute('class', 'fas fa-heart');
+
+    var icon_is_small = document.createElement("SPAN");
+    icon_is_small.setAttribute('class', 'icon is-small');
+    icon_is_small.innerHTML += "&nbsp";
+    icon_is_small.appendChild(fas_fa_heart);
+
+    var level_item = document.createElement("a");
+    level_item.setAttribute('class', 'level-item');
+    level_item.setAttribute('onclick', 'likeComment('+comment['commentID']+')');
+    level_item.appendChild(icon_is_small);
+
+    var p2 = document.createElement("P");
+    p2.setAttribute('id', 'commentLike'+comment['commentID']);
+    p2.innerHTML = "&nbsp"+comment['nbLikes'];
+
+    var level_left = document.createElement("div");
+    level_left.setAttribute('class', 'level-left');
+    level_left.appendChild(level_item);
+    level_item.appendChild(p2);
+
+    var level_is_mobile = document.createElement("NAV");
+    level_is_mobile.setAttribute('class', 'level is-mobile');
+    level_is_mobile.appendChild(level_left);
+
     var media_content = document.createElement("div");
     media_content.setAttribute('class', 'media-content');
     media_content.appendChild(content);
+    media_content.appendChild(level_is_mobile);
 
     var media = document.createElement("ARTICLE");
     media.setAttribute('class', 'media');
