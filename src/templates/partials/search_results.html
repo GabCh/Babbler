@@ -1,5 +1,10 @@
 {% extends "layout.html" %}
 
+{% block head %}
+    <script src="{{ url_for('static', filename='js/like.js') }}" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='js/comment.js') }}" type="text/javascript"></script>
+{% endblock %}
+
 {% block body %}
 <div class="section">
     {% if babbles|length > 0 %}
@@ -27,16 +32,33 @@
               </div>
               <nav class="level is-mobile">
                 <div class="level-left">
-                  <a class="level-item">
+                  <a class="level-item" onclick="showOrHideCommentArea('{{ babble.id }}', {{ babbles|safe }})">
                     <span class="icon is-small"><i class="fas fa-reply"></i></span>
                   </a>
-                  <a class="level-item">
+                  <a class="level-item" onclick="like('{{ babble.id }}')">
                     <span class="icon is-small"><i class="fas fa-heart"></i></span>
                   </a>
+                  <p id="like{{ babble.id }}">
+                      {{ babble.nbLikes }}
+                  </p>
+                  <a id="commentArea{{ babble.id }}" class="level-item"></a>
+                </div>
+                <div class="level-right">
+                    <a class="level-item">
+                        <span id="has-comment{{ babble.id }}" class="icon is-small" onclick="showHideComments({{ babble }})">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </span>
+                        {% if babble.nbComments == 0 %}
+                           <script>
+                               hideHasComment({{ babble.id }});
+                           </script>
+                        {% endif %}
+                    </a>
                 </div>
               </nav>
             </div>
           </article>
+          <div id="showComments{{ babble.id }}" style="display: none;"></div>
         </div>
         {% endfor %}
     {% endif %}
