@@ -6,9 +6,9 @@ Homemade twitter-like web application
 Sur la racine du projet, exécuter les commandes suivantes en ordre.
 
 ```bash
-sudo pip3 install virtualenv
+pip install virtualenv
 virtualenv venv
-source venv/bin/activate
+source venv/bin/activate (venv/Scripts/activate sous windows)
 pip install -r requirements.txt
 mysql -u root -p < data/dump.sql
 ```

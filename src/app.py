@@ -4,7 +4,7 @@ import datetime
 import os
 import shutil
 
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, jsonify
 from src.babbler.babblerdb import BabblerDB
 from src.babbler.utils import crop_tags_in_message
 
@@ -220,6 +220,59 @@ def get_user(username):
         exists = True
     return str(exists)
 
+
+@app.route('/like', methods=['POST'])
+def like_babble():
+    if 'username' in session:
+        data = request.form
+        id = data['id']
+        if db.already_liked_this_babble(id, session['username']):
+            db.remove_like(id, session['username'])
+        else:
+            db.add_like(id, session['username'])
+        return str(db.get_nbLikes(id))
+    else:
+        return redirect('/login')
+
+
+@app.route('/likeComment', methods=['POST'])
+def like_comment():
+    if 'username' in session:
+        data = request.form
+        commentID = data['commentID']
+        if db.already_liked_this_comment(commentID, session['username']):
+            db.remove_comment_like(commentID, session['username'])
+        else:
+            db.add_comment_like(commentID, session['username'])
+        return str(db.get_comment_nbLikes(commentID))
+    else:
+        return redirect('/login')
+
+
+@app.route('/comment', methods=['POST'])
+def comment_babble():
+    if 'username' in session:
+        data = request.form
+        message = data['message']
+        if len(message) == 0:
+            return str("empty comment")
+        babbleID = data['id']
+        commentID = str(db.generate_comment_id())
+        db.add_comment(babbleID, commentID, session['username'], message, datetime.datetime.now())
+        return str(db.get_nbComments(babbleID))
+    else:
+        return redirect('/login')
+
+
+@app.route('/getComments', methods=['POST'])
+def get_comments():
+    if 'username' in session:
+        data = request.form
+        babbleID = data['id']
+        comments = db.get_comments_of_babble(babbleID)
+        return jsonify({'response': comments})
+    else:
+        return redirect('/login')
 
 if __name__ == '__main__':
     app.run()
