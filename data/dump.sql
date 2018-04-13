@@ -40,9 +40,15 @@ CREATE TABLE IF NOT EXISTS Comments(babbleID integer,
 									username char(12),
                                     message TEXT,
                                     time_s TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                    nbLikes integer,
                                     PRIMARY KEY(commentID),
                                     FOREIGN KEY(babbleID) REFERENCES Babbles(id) ON DELETE CASCADE,
                                     FOREIGN KEY(username) REFERENCES Babblers(username) ON DELETE CASCADE);
+                                    
+CREATE TABLE IF NOT EXISTS CommentLikes(id integer, 
+										username char(12),
+										FOREIGN KEY(id) REFERENCES Comments(commentID) ON DELETE CASCADE,
+										FOREIGN KEY(username) REFERENCES Babblers(username) ON DELETE CASCADE);
 
 delimiter //
 CREATE TRIGGER likeBabble 
@@ -63,6 +69,28 @@ BEGIN
 	UPDATE Babbles
     SET nbLikes = nbLikes - 1
     WHERE id = OLD.id;
+END;//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER likeComment 
+AFTER INSERT ON CommentLikes
+FOR EACH ROW
+BEGIN
+	UPDATE Comments
+    SET nbLikes = nbLikes + 1
+    WHERE commentID = NEW.id;
+END;//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER unlikeComment 
+AFTER DELETE ON CommentLikes
+FOR EACH ROW
+BEGIN
+	UPDATE Comments
+    SET nbLikes = nbLikes - 1
+    WHERE commentID = OLD.id;
 END;//
 delimiter ;
 
