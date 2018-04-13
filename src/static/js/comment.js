@@ -1,6 +1,5 @@
 function showOrHideCommentArea(id, babbles){
     if(document.getElementById("commentArea" + id).childNodes.length <= 0){
-        document.getElementById("showComments" + id).innerHTML = "";
         var commentArea = document.createElement('TEXTAREA');
         commentArea.setAttribute('placeholder', 'Your comment...');
         commentArea.setAttribute('id', 'commentTextBox' + id);
@@ -80,7 +79,7 @@ function createCommentCard(babbleID, comment){
     username.innerHTML = "<strong>@" + comment['username']+"</strong>";
 
     var elapsed = document.createElement("SMALL");
-    elapsed.innerHTML = comment['elapsed']+" ago";
+    elapsed.innerHTML = "&nbsp"+comment['elapsed']+" ago";
 
     var message = document.createElement("div");
     message.setAttribute('style', 'white-space: pre-line;');
@@ -114,6 +113,7 @@ function createCommentCard(babbleID, comment){
 
 function showComments(babbleID){
      getComments(babbleID)
+     document.getElementById("showComments" + babbleID).innerHTML += "<br>";
      document.getElementById("showComments" + babbleID).style.display = '';
 }
 
