@@ -9,6 +9,7 @@ function showOrHideCommentArea(id, babbles){
         for (b of babbles){
             document.getElementById("commentArea" + b['id']).innerHTML = "";
         }
+        document.getElementById("commentArea" + id).innerHTML +=  " &nbsp &nbsp";
         document.getElementById("commentArea" + id).appendChild(commentArea);
     }
     else{
