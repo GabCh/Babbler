@@ -41,13 +41,13 @@ function link_mensions(message){
     }
     var link = "";
     for ( i = 0 ; i < matches.length ; i++){
-        var user = matches[0].substr(1);
+        var user = matches[i].substr(1);
         var exists = user_exists(user);
-        console.log(exists);
         if(exists){
             link = "<a href=\"/babblers/"+user+"\">@"+user+"</a>";
             var position = message.indexOf(user);
-            message = message.substr(0, position-1) + link + message.substr(position + link.length);
+            console.log(message);
+            message = message.substr(0, position-1) + link + message.substr(position + user.length);
         }
     }
     return message;
