@@ -1,8 +1,6 @@
 {% extends "layout.html" %}
 
 {% block body %}
-    <script src="{{ url_for('static', filename='js/like.js') }}" type="text/javascript"></script>
-    <script src="{{ url_for('static', filename='js/comment.js') }}" type="text/javascript"></script>
-    <script src="{{ url_for('static', filename='js/tags_and_mentions.js') }}" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='js/babbles_and_comments.js') }}" type="text/javascript"></script>
 {% include "partials/feed.html" with context %}
 {% endblock %}

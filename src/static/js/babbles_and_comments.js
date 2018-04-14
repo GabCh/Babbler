@@ -1,3 +1,64 @@
+function like(id){
+    var request = new XMLHttpRequest();
+    request.open('POST', '/like', true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.onreadystatechange = function() {
+        if(request.readyState == XMLHttpRequest.DONE){
+            document.getElementById("like" + id).innerHTML = request.responseText + "&nbsp &nbsp";
+        }
+    }
+    request.send("id=" + id);
+}
+
+function likeComment(commentID){
+    var request = new XMLHttpRequest();
+    request.open('POST', '/likeComment', true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.onreadystatechange = function() {
+        if(request.readyState == XMLHttpRequest.DONE){
+            document.getElementById("commentLike" + commentID).innerHTML = "&nbsp"+request.responseText + "&nbsp &nbsp";
+        }
+    }
+    request.send("commentID=" + commentID);
+}
+
+function user_exists(username){
+    var request = new XMLHttpRequest();
+    request.open('GET', '/users/' + username, false);
+    request.send()
+    if(request.responseText == 'True'){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+function link_mensions(message){
+    var matches = message.match(/@([a-z\d_]+)/gi);
+    if(matches == null){
+        return message;
+    }
+    var link = "";
+    for ( i = 0 ; i < matches.length ; i++){
+        var user = matches[0].substr(1);
+        var exists = user_exists(user);
+        console.log(exists);
+        if(exists){
+            link = "<a href=\"/babblers/"+user+"\">@"+user+"</a>";
+            var position = message.indexOf(user);
+            message = message.substr(0, position-1) + link + message.substr(position + link.length);
+        }
+    }
+    return message;
+}
+
+function link_tags_and_mentions(message){
+    message = message.replace(/#([a-z\d_]+)/ig, "<a href=\"/tag/$1\">#$1</a>");
+    message = link_mensions(message);
+    return message;
+}
+
 function showOrHideCommentArea(id, babbles){
     if(document.getElementById("commentArea" + id).childNodes.length <= 0){
         var commentArea = document.createElement('TEXTAREA');
@@ -60,23 +121,6 @@ function getComments(babbleID, comments){
     request.send("id=" + babbleID);
 }
 
-function link_comment_tags(message){
-    message = message.replace(/#([a-z\d_]+)/ig, "<a href=\"/tag/$1\">#$1</a>");
-    return message;
-}
-
-function likeComment(commentID){
-    var request = new XMLHttpRequest();
-    request.open('POST', '/likeComment', true);
-    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    request.onreadystatechange = function() {
-        if(request.readyState == XMLHttpRequest.DONE){
-            document.getElementById("commentLike" + commentID).innerHTML = "&nbsp"+request.responseText + "&nbsp &nbsp";
-        }
-    }
-    request.send("commentID=" + commentID);
-}
-
 /***************** WARNING : BIG MONSTER *****************/
 function createCommentCard(babbleID, comment){
     /************* PICTURE *****************/
@@ -101,7 +145,7 @@ function createCommentCard(babbleID, comment){
 
     var message = document.createElement("div");
     message.setAttribute('style', 'white-space: pre-line;');
-    message.innerHTML = link_comment_tags(comment['message']);
+    message.innerHTML = link_tags_and_mentions(comment['message']);
 
     var p1 = document.createElement("P");
     p1.appendChild(username);

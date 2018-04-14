@@ -1,9 +1,7 @@
 {% extends "layout.html" %}
 
 {% block head %}
-    <script src="{{ url_for('static', filename='js/like.js') }}" type="text/javascript"></script>
-    <script src="{{ url_for('static', filename='js/comment.js') }}" type="text/javascript"></script>
-    <script src="{{ url_for('static', filename='js/tags_and_mentions.js') }}" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='js/babbles_and_comments.js') }}" type="text/javascript"></script>
 {% endblock %}
 
 {% block body %}
@@ -24,7 +22,7 @@
                   <br>
                   <div style="white-space: pre-line;" id="linkTags{{ babble.id }}"></div>
                   <script type="text/javascript">
-                    document.getElementById("linkTags{{ babble.id }}").innerHTML = link_tags("{{ babble.message }}", {{ babble.tags|safe }});
+                    document.getElementById("linkTags{{ babble.id }}").innerHTML = link_tags_and_mentions("{{ babble.message }}", {{ babble.tags|safe }});
                   </script>
               </p>
           </div>

@@ -17,7 +17,7 @@
                         <br>
                             <div style="white-space: pre-line;" id="linkTags{{ babble.id }}"></div>
                             <script type="text/javascript">
-                                document.getElementById("linkTags{{ babble.id }}").innerHTML = link_tags("{{ babble.message }}", {{ babble.tags|safe }});
+                                document.getElementById("linkTags{{ babble.id }}").innerHTML = link_tags_and_mentions("{{ babble.message }}", {{ babble.tags|safe }});
                             </script>
                         </p>
                     </div>
