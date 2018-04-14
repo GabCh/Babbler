@@ -132,7 +132,7 @@ def my_profile():
         nb_babbles = len(babbles)
         nb_followers = len(followers)
         nb_subscriptions = len(subscriptions)
-        view = render_template('/partials/myprofile.html', user=user,
+        view = render_template('/partials/myprofile.html',username=session['username'], user=user,
                                followed=followed, babbles=babbles, logged=True,
                                followers=followers, subscriptions=subscriptions,
                                nb_babbles=nb_babbles, nb_followers=nb_followers,
@@ -146,7 +146,7 @@ def my_profile():
 def feed():
     if 'username' in session:
         babbles = db.get_babbles_from_followed_babblers(session['username'])
-        return render_template('/partials/myfeed.html', babbles=babbles, logged=True)
+        return render_template('/partials/myfeed.html', username=session['username'], babbles=babbles, logged=True)
     else:
         return redirect('/login')
 
@@ -164,7 +164,7 @@ def babbler_profile(username):
         nb_babbles = len(babbles)
         nb_followers = len(followers)
         nb_subscriptions = len(subscriptions)
-        view = render_template('/partials/profile.html', user=user[0],
+        view = render_template('/partials/profile.html', username=session['username'], user=user[0],
                                followed=followed, babbles=babbles, logged=True,
                                followers=followers, subscriptions=subscriptions,
                                nb_babbles=nb_babbles, nb_followers=nb_followers,
@@ -178,7 +178,8 @@ def babbler_profile(username):
 def tag_page(tag):
     if 'username' in session:
         babbles = db.read_babbles_with_tag(tag)
-        view = render_template('/partials/tag_results.html', babbles=babbles, tag=tag, logged=True)
+        view = render_template('/partials/tag_results.html', username=session['username'],
+                               babbles=babbles, tag=tag, logged=True)
         return view
     else:
         return redirect('/login')
@@ -194,6 +195,7 @@ def search_form():
             babbles_with_tag = db.read_babbles_with_tag(keyword)
             babbles.extend(babbles_with_tag)
             return render_template('/partials/search_results.html',
+                                   username=session['username'],
                                    keyword=keyword, babbles=babbles,
                                    babblers=babblers, logged=True)
         else:
@@ -265,6 +267,28 @@ def get_comments():
         return jsonify({'response': comments})
     else:
         return redirect('/login')
+
+@app.route('/deleteBabble', methods=['POST'])
+def delete_babble():
+    if 'username' in session:
+        data = request.form
+        id = data['id']
+        db.remove_babble(id)
+        return "deleted"
+    else:
+        return redirect('/login')
+
+
+@app.route('/deleteComment', methods=['POST'])
+def delete_comment():
+    if 'username' in session:
+        data = request.form
+        commentID = data['commentID']
+        db.remove_comment(commentID)
+        return "deleted"
+    else:
+        return redirect('/login')
+
 
 if __name__ == '__main__':
     app.run()

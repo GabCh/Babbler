@@ -8,7 +8,7 @@
 <div class="section container">
     <p class="title is-2 is-spaced">Babbles using #{{ tag }}: </p>
     {% for babble in babbles %}
-    <div class="box">
+    <div id="delete{{ babble.id }}" class="box">
       <article class="media">
         <div class="media-left">
           <figure class="image is-64x64">
@@ -41,7 +41,7 @@
             </div>
             <div class="level-right">
                 <a class="level-item">
-                    <span id="has-comment{{ babble.id }}" class="icon is-small" onclick="showHideComments({{ babble }})">
+                    <span id="has-comment{{ babble.id }}" class="icon is-small" onclick="showHideComments({{ babble }}, '{{ username }}')">
                         <i class="fa fa-ellipsis-h"></i>
                     </span>
                     {% if babble.nbComments == 0 %}
@@ -52,6 +52,15 @@
                 </a>
             </div>
           </nav>
+        </div>
+        <div class="media-right">
+            {% if username == babble.username %}
+                <a>
+                    <span class="icon is-small" onclick="delete_babble('{{ babble.id }}')">
+                        <i class="fas fa-trash-alt"></i>
+                    </span>
+                </a>
+            {% endif %}
         </div>
       </article>
       <div id="showComments{{ babble.id }}" style="display: none;"></div>

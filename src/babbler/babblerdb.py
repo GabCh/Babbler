@@ -323,6 +323,15 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
+    def remove_babble(self, id):
+        sql = "DELETE FROM Babbles WHERE id = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (id,))
+                self.connection.commit()
+        except Exception as e:
+            print(e)
+
     def remove_comment(self, commentID):
         sql = "DELETE FROM Comments WHERE commentID = %s"
         try:
