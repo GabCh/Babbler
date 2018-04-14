@@ -59,6 +59,11 @@ function link_tags_and_mentions(message){
     return message;
 }
 
+/* Si on passe le message du babble direct à partir du html, les new lines causent problème */
+function link_tags_and_mentions_babble(babble){
+    return link_tags_and_mentions(babble['message']);
+}
+
 function showOrHideCommentArea(id, babbles){
     if(document.getElementById("commentArea" + id).childNodes.length <= 0){
         var commentArea = document.createElement('TEXTAREA');
