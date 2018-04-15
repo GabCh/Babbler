@@ -1,7 +1,8 @@
 {% block body %}
 <div class="container">
     <div class="section">
-    {% for babble in babbles %}
+        <p class="title is-2 is-spaced">{{ title }}</p>
+        {% for babble in babbles %}
         <div id="delete{{ babble.id }}" class="box">
             <article class="media">
                 <div class="media-left">

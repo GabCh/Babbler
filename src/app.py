@@ -31,11 +31,15 @@ def main():
     logged = 'username' in session
     if logged:
         username = session['username']
-        babbles = db.get_babbles_from_followed_babblers(username)
-        return render_template('index.html',
+        babbles = db.get_babbles_from_followed_babblers(session['username'])
+        title = "Your newsfeed"
+        if not babbles:
+            babbles = db.get_recent_babbles()
+            title = "Recent babbles by others"
+        return render_template('index.html', username=username,
                                new_login=request.args.get('new_login'),
                                babbler=username, babbles=babbles,
-                               logged=logged)
+                               logged=logged, title=title)
     else:
         return redirect('/login')
 
@@ -146,7 +150,12 @@ def my_profile():
 def feed():
     if 'username' in session:
         babbles = db.get_babbles_from_followed_babblers(session['username'])
-        return render_template('/partials/myfeed.html', username=session['username'], babbles=babbles, logged=True)
+        title = "Your newsfeed"
+        if not babbles:
+            babbles = db.get_recent_babbles()
+            title = "Recent babbles by others"
+        return render_template('/partials/myfeed.html', username=session['username'],
+                               babbles=babbles, logged=True, title=title)
     else:
         return redirect('/login')
 

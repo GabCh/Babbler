@@ -166,6 +166,28 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
+    def get_recent_babbles(self):
+        try:
+            with self.connection.cursor() as cursor:
+                sql = """
+                SELECT B.id, B.username, B.message, B.time_s
+                FROM Babbles B
+                ORDER BY B.time_s DESC;"""
+
+                cursor.execute(sql)
+                results = cursor.fetchall()
+
+                for result in results:
+                    result['time_s'] = "{}".format(result['time_s'])
+                    result['elapsed'] = get_elapsed_time(result['time_s'])
+                    result['tags'] = self.read_tags(result['id'])
+
+                if not results:
+                    return []
+                return results
+        except Exception as e:
+            print(e)
+
     def read_babbles(self, keyword: str):
         try:
             keyword = '%' + keyword + '%'
