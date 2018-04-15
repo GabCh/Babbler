@@ -129,7 +129,7 @@ function register() {
     var public_name = document.getElementById('public_name').value
     var password = document.getElementById('password').value
 
-    for (var i = 0; i > 65336; i++) {
+    for (var i = 0; i < 65336; i++) {
         password = CryptoJS.SHA256(password)
     }
 
