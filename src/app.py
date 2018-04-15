@@ -31,11 +31,15 @@ def main():
     logged = 'username' in session
     if logged:
         username = session['username']
-        babbles = db.get_babbles_from_followed_babblers(username)
+        babbles = db.get_babbles_from_followed_babblers(session['username'])
+        title = "Your newsfeed"
+        if not babbles:
+            babbles = db.get_recent_babbles()
+            title = "Recent babbles by others"
         return render_template('index.html',
                                new_login=request.args.get('new_login'),
                                babbler=username, babbles=babbles,
-                               logged=logged)
+                               logged=logged, title=title)
     else:
         return redirect('/login')
 
@@ -146,7 +150,11 @@ def my_profile():
 def feed():
     if 'username' in session:
         babbles = db.get_babbles_from_followed_babblers(session['username'])
-        return render_template('/partials/myfeed.html', username=session['username'], babbles=babbles, logged=True)
+        title = "Your newsfeed"
+        if not babbles:
+            babbles = db.get_recent_babbles()
+            title = "Recent babbles by others"
+        return render_template('/partials/myfeed.html', babbles=babbles, logged=True, title=title)
     else:
         return redirect('/login')
 
@@ -267,6 +275,7 @@ def get_comments():
         return jsonify({'response': comments})
     else:
         return redirect('/login')
+
 
 @app.route('/deleteBabble', methods=['POST'])
 def delete_babble():

@@ -1,6 +1,7 @@
 {% block body %}
 <div class="container">
     <div class="section">
+    <p class="title is-2 is-spaced">{{ title }}</p>
     {% for babble in babbles %}
         <div id="delete{{ babble.id }}" class="box">
             <article class="media">
@@ -19,6 +20,7 @@
                             <script type="text/javascript">
                                 document.getElementById("linkTags{{ babble.id }}").innerHTML = link_tags_and_mentions_babble({{babble|safe}});
                             </script>
+
                         </p>
                     </div>
                     <nav class="level is-mobile">
