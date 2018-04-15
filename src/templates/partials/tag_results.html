@@ -17,12 +17,14 @@
         </div>
         <div class="media-content">
           <div class="content">
+              <p>
                   <a href="/babblers/{{ babble.username }}"><strong>@{{ babble.username }}</strong></a> <small>{{ babble.elapsed }} ago</small>
                   <br>
                   <div style="white-space: pre-line;" id="linkTags{{ babble.id }}"></div>
-              <script type="text/javascript">
+                  <script type="text/javascript">
                     document.getElementById("linkTags{{ babble.id }}").innerHTML = link_tags_and_mentions_babble({{babble|safe}});
-              </script>
+                  </script>
+              </p>
           </div>
           <nav class="level is-mobile">
             <div class="level-left">

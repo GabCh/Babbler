@@ -110,7 +110,7 @@ function hideHasComment(id){
 
 function sendComment(id){
     if(window.event.keyCode == 13){
-        // If the user want to add a new line without sending, he has to hold shift in the same time
+        //If the user want to add a new line without sending, he has to hold shift in the same time
         if(window.event.shiftKey){
              document.getElementById("commentTextBox" + id).innerHTML += "<br>";
         }
