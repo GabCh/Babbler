@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS Babblers(username char(32),
                       password char(64), 
                       PRIMARY KEY(username));
 
-
 CREATE TABLE IF NOT EXISTS Babbles(id integer, 
 					 username char(32),
                      message TEXT, 
@@ -17,7 +16,8 @@ CREATE TABLE IF NOT EXISTS Babbles(id integer,
                      nbComments integer,
                      PRIMARY KEY(id), 
                      FOREIGN KEY(username) REFERENCES Babblers(username) ON DELETE CASCADE);
-                                        
+
+CREATE INDEX babbleUserIdx USING HASH ON Babbles (username);
 
 CREATE TABLE IF NOT EXISTS Tag(id integer,
 							   tag char(32),
@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS Likes(id integer,
                                  FOREIGN KEY(id) REFERENCES Babbles(id) ON DELETE CASCADE,
                                  FOREIGN KEY(username) REFERENCES Babblers(username) ON DELETE CASCADE);
                                  
+CREATE INDEX LikesIndex USING HASH ON Likes (username, id);
+                                 
 CREATE TABLE IF NOT EXISTS Comments(babbleID integer,
 									commentID integer,
 									username char(12),
@@ -43,11 +45,15 @@ CREATE TABLE IF NOT EXISTS Comments(babbleID integer,
                                     PRIMARY KEY(commentID),
                                     FOREIGN KEY(babbleID) REFERENCES Babbles(id) ON DELETE CASCADE,
                                     FOREIGN KEY(username) REFERENCES Babblers(username) ON DELETE CASCADE);
+
+CREATE INDEX commentIDX USING HASH ON Comments (babbleID);
                                     
 CREATE TABLE IF NOT EXISTS CommentLikes(id integer, 
 										username char(12),
 										FOREIGN KEY(id) REFERENCES Comments(commentID) ON DELETE CASCADE,
 										FOREIGN KEY(username) REFERENCES Babblers(username) ON DELETE CASCADE);
+
+CREATE INDEX CommentLikesIndex USING HASH ON CommentLikes (username, id);
                                         
 
 delimiter //

@@ -170,9 +170,10 @@ class BabblerDB(object):
         try:
             with self.connection.cursor() as cursor:
                 sql = """
-                SELECT B.id, B.username, B.message, B.time_s
+                SELECT B.id, B.username, B.message, B.time_s, B.nbLikes, B.nbComments
                 FROM Babbles B
-                ORDER BY B.time_s DESC;"""
+                ORDER BY B.time_s DESC
+                LIMIT 100;"""
 
                 cursor.execute(sql)
                 results = cursor.fetchall()
