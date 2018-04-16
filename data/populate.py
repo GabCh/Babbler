@@ -40,6 +40,7 @@ def populate_babbles(db: BabblerDB):
             tags = []
             for j in range(5):
                 tags.append(tags_lines[randint(0, LINES_IN_FILES-1)].replace('\n', ''))
+                message += " #"+tags_lines[randint(0, LINES_IN_FILES-1)].replace('\n', '')
             username, _ = lines[randint(0, LINES_IN_FILES-1)].split(', ', maxsplit=1)
             time_s = datetime.datetime.now() - datetime.timedelta(days=randint(0, 5), seconds=randint(0, 60),
                                                                   minutes=randint(0, 60), weeks=randint(0, 4))

@@ -166,6 +166,29 @@ class BabblerDB(object):
         except Exception as e:
             print(e)
 
+    def get_recent_babbles(self):
+        try:
+            with self.connection.cursor() as cursor:
+                sql = """
+                SELECT B.id, B.username, B.message, B.time_s, B.nbLikes, B.nbComments
+                FROM Babbles B
+                ORDER BY B.time_s DESC
+                LIMIT 100;"""
+
+                cursor.execute(sql)
+                results = cursor.fetchall()
+
+                for result in results:
+                    result['time_s'] = "{}".format(result['time_s'])
+                    result['elapsed'] = get_elapsed_time(result['time_s'])
+                    result['tags'] = self.read_tags(result['id'])
+
+                if not results:
+                    return []
+                return results
+        except Exception as e:
+            print(e)
+
     def read_babbles(self, keyword: str):
         try:
             keyword = '%' + keyword + '%'
@@ -319,6 +342,15 @@ class BabblerDB(object):
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (commentID, username))
+                self.connection.commit()
+        except Exception as e:
+            print(e)
+
+    def remove_babble(self, id):
+        sql = "DELETE FROM Babbles WHERE id = %s"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, (id,))
                 self.connection.commit()
         except Exception as e:
             print(e)

@@ -7,9 +7,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style/layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style/babble.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
-    <script src="{{ url_for('static', filename='js/like.js') }}" type="text/javascript"></script>
-    <script src="{{ url_for('static', filename='js/comment.js') }}" type="text/javascript"></script>
     {% block head %}{% endblock %}
 </head>
 <body>

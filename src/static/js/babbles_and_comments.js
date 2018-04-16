@@ -1,3 +1,93 @@
+function like(id){
+    var request = new XMLHttpRequest();
+    request.open('POST', '/like', true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.onreadystatechange = function() {
+        if(request.readyState == XMLHttpRequest.DONE){
+            document.getElementById("like" + id).innerHTML = request.responseText + "&nbsp &nbsp";
+        }
+    }
+    request.send("id=" + id);
+}
+
+function likeComment(commentID){
+    var request = new XMLHttpRequest();
+    request.open('POST', '/likeComment', true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.onreadystatechange = function() {
+        if(request.readyState == XMLHttpRequest.DONE){
+            document.getElementById("commentLike" + commentID).innerHTML = "&nbsp"+request.responseText + "&nbsp &nbsp";
+        }
+    }
+    request.send("commentID=" + commentID);
+}
+
+function user_exists(username){
+    var request = new XMLHttpRequest();
+    request.open('GET', '/users/' + username, false);
+    request.send()
+    if(request.responseText == 'True'){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+function link_mensions(message){
+    var matches = message.match(/@([a-z\d_]+)/gi);
+    if(matches == null){
+        return message;
+    }
+    var link = "";
+    for ( i = 0 ; i < matches.length ; i++){
+        var user = matches[i].substr(1);
+        var exists = user_exists(user);
+        if(exists){
+            link = "<a href=\"/babblers/"+user+"\">@"+user+"</a>";
+            var position = message.indexOf(user);
+            message = message.substr(0, position-1) + link + message.substr(position + user.length);
+        }
+    }
+    return message;
+}
+
+function link_tags_and_mentions(message){
+    message = message.replace(/#([a-z\d_]+)/ig, "<a href=\"/tag/$1\">#$1</a>");
+    message = link_mensions(message);
+    return message;
+}
+
+/* Si on passe le message du babble direct à partir du html, les new lines causent problème */
+function link_tags_and_mentions_babble(babble){
+    return link_tags_and_mentions(babble['message']);
+}
+
+function delete_babble(id){
+    var request = new XMLHttpRequest();
+    request.open('POST', '/deleteBabble', true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.onreadystatechange = function() {
+        if(request.readyState == XMLHttpRequest.DONE){
+            var post = document.getElementById("delete" + id);
+            post.parentNode.removeChild(post);
+        }
+    }
+    request.send("id=" + id);
+}
+
+function delete_comment(commentID){
+    var request = new XMLHttpRequest();
+    request.open('POST', '/deleteComment', true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.onreadystatechange = function() {
+        if(request.readyState == XMLHttpRequest.DONE){
+            var comment = document.getElementById("deleteComment" + commentID);
+            comment.parentNode.removeChild(comment);
+        }
+    }
+    request.send("commentID=" + commentID);
+}
 
 function showOrHideCommentArea(id, babbles){
     if(document.getElementById("commentArea" + id).childNodes.length <= 0){
@@ -5,10 +95,7 @@ function showOrHideCommentArea(id, babbles){
         commentArea.setAttribute('placeholder', 'Your comment...');
         commentArea.setAttribute('id', 'commentTextBox' + id);
         commentArea.setAttribute('class', 'comment');
-        commentArea.setAttribute('onkeypress', 'sendComment('+id+');')
-        for (b of babbles){
-            document.getElementById("commentArea" + b['id']).innerHTML = "";
-        }
+        commentArea.setAttribute('onkeypress', 'sendComment('+id+');');
         document.getElementById("commentArea" + id).innerHTML +=  " &nbsp &nbsp";
         document.getElementById("commentArea" + id).appendChild(commentArea);
     }
@@ -45,7 +132,7 @@ function sendComment(id){
     }
 }
 
-function getComments(babbleID, comments){
+function getComments(babbleID, username){
     var request = new XMLHttpRequest();
     request.open('POST', '/getComments', true);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -53,7 +140,7 @@ function getComments(babbleID, comments){
         if(request.readyState == XMLHttpRequest.DONE){
             var res = JSON.parse(request.response)
              for (comment of res['response']){
-                createCommentCard(babbleID, comment)
+                createCommentCard(babbleID, comment, username);
              }
 
         }
@@ -61,20 +148,8 @@ function getComments(babbleID, comments){
     request.send("id=" + babbleID);
 }
 
-function likeComment(commentID){
-    var request = new XMLHttpRequest();
-    request.open('POST', '/likeComment', true);
-    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    request.onreadystatechange = function() {
-        if(request.readyState == XMLHttpRequest.DONE){
-            document.getElementById("commentLike" + commentID).innerHTML = "&nbsp"+request.responseText + "&nbsp &nbsp";
-        }
-    }
-    request.send("commentID=" + commentID);
-}
-
 /***************** WARNING : BIG MONSTER *****************/
-function createCommentCard(babbleID, comment){
+function createCommentCard(babbleID, comment, loggedUser){
     /************* PICTURE *****************/
     var img = document.createElement("IMG");
     img.setAttribute('src', '/static/images/'+comment['username']+'.jpg');
@@ -97,7 +172,7 @@ function createCommentCard(babbleID, comment){
 
     var message = document.createElement("div");
     message.setAttribute('style', 'white-space: pre-line;');
-    message.innerHTML = comment['message'];
+    message.innerHTML = link_tags_and_mentions(comment['message']);
 
     var p1 = document.createElement("P");
     p1.appendChild(username);
@@ -130,7 +205,7 @@ function createCommentCard(babbleID, comment){
     var level_left = document.createElement("div");
     level_left.setAttribute('class', 'level-left');
     level_left.appendChild(level_item);
-    level_item.appendChild(p2);
+    level_left.appendChild(p2);
 
     var level_is_mobile = document.createElement("NAV");
     level_is_mobile.setAttribute('class', 'level is-mobile');
@@ -141,20 +216,40 @@ function createCommentCard(babbleID, comment){
     media_content.appendChild(content);
     media_content.appendChild(level_is_mobile);
 
+    /**************** DELETE *******************/
+    var fas_fa_trash_alt = document.createElement("I");
+    fas_fa_trash_alt.setAttribute('class', 'fas fa-trash-alt');
+
+    var icon_is_small2 = document.createElement("SPAN");
+    icon_is_small2.setAttribute('class', 'icon is-small');
+    icon_is_small2.setAttribute('onclick', 'delete_comment('+comment['commentID']+')');
+    icon_is_small2.appendChild(fas_fa_trash_alt);
+
+    var a = document.createElement("a");
+    a.appendChild(icon_is_small2);
+
+    var media_right = document.createElement("div");
+    media_right.setAttribute('class', 'media-right');
+    media_right.appendChild(a);
+
     var media = document.createElement("ARTICLE");
     media.setAttribute('class', 'media');
     media.appendChild(media_left);
     media.appendChild(media_content);
+    if(loggedUser == comment['username']){
+        media.appendChild(media_right);
+    }
 
     var box = document.createElement("div");
     box.setAttribute('class', 'box');
+    box.setAttribute('id', "deleteComment" + comment['commentID'])
     box.appendChild(media);
 
     document.getElementById("showComments" + babbleID).appendChild(box);
 }
 
-function showComments(babbleID){
-     getComments(babbleID)
+function showComments(babbleID, username){
+     getComments(babbleID, username);
      document.getElementById("showComments" + babbleID).innerHTML += "<br>";
      document.getElementById("showComments" + babbleID).style.display = '';
 }
@@ -164,9 +259,9 @@ function hideComments(babbleID){
     document.getElementById("showComments" + babbleID).style.display = 'none';
 }
 
-function showHideComments(babble){
+function showHideComments(babble, username){
     if(document.getElementById("showComments" + babble['id']).style.display == 'none'){
-        showComments(babble['id']);
+        showComments(babble['id'], username);
     }
     else{
         hideComments(babble['id']);

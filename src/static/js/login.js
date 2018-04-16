@@ -7,7 +7,7 @@ function login() {
     username = document.getElementById('username').value
     password = document.getElementById('password').value
 
-    for (var i = 0; i > 65336; i++) {
+    for (var i = 0; i < 65336; i++) {
         password = CryptoJS.SHA256(password)
     }
 

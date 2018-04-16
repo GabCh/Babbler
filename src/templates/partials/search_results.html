@@ -1,8 +1,7 @@
 {% extends "layout.html" %}
 
 {% block head %}
-    <script src="{{ url_for('static', filename='js/like.js') }}" type="text/javascript"></script>
-    <script src="{{ url_for('static', filename='js/comment.js') }}" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='js/babbles_and_comments.js') }}" type="text/javascript"></script>
 {% endblock %}
 
 {% block body %}
@@ -10,7 +9,7 @@
     {% if babbles|length > 0 %}
         <p class="title is-2 is-spaced">Babbles results for : {{ keyword }}</p>
         {% for babble in babbles %}
-        <div class="box">
+        <div id="delete{{ babble.id }}" class="box">
           <article class="media">
             <div class="media-left">
               <figure class="image is-64x64">
@@ -22,12 +21,10 @@
                   <p>
                       <a href="/babblers/{{ babble.username }}"><strong>@{{ babble.username }}</strong></a> <small>{{ babble.elapsed }} ago</small>
                       <br>
-                      <div style="white-space: pre-line;">
-                      {{ babble.message }}
-                      </div>
-                      {% for tag in babble.tags %}
-                      <a href="/tag/{{ tag.tag }}">#{{tag.tag}}</a>
-                      {% endfor %}
+                      <div style="white-space: pre-line;" id="linkTags{{ babble.id }}"></div>
+                      <script type="text/javascript">
+                        document.getElementById("linkTags{{ babble.id }}").innerHTML = link_tags_and_mentions_babble({{babble|safe}});
+                      </script>
                   </p>
               </div>
               <nav class="level is-mobile">
@@ -45,7 +42,7 @@
                 </div>
                 <div class="level-right">
                     <a class="level-item">
-                        <span id="has-comment{{ babble.id }}" class="icon is-small" onclick="showHideComments({{ babble }})">
+                        <span id="has-comment{{ babble.id }}" class="icon is-small" onclick="showHideComments({{ babble }}, '{{ username }}')">
                             <i class="fa fa-ellipsis-h"></i>
                         </span>
                         {% if babble.nbComments == 0 %}
@@ -56,6 +53,15 @@
                     </a>
                 </div>
               </nav>
+            </div>
+            <div class="media-right">
+                {% if username == babble.username %}
+                    <a>
+                        <span class="icon is-small" onclick="delete_babble('{{ babble.id }}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </span>
+                    </a>
+                {% endif %}
             </div>
           </article>
           <div id="showComments{{ babble.id }}" style="display: none;"></div>

@@ -1,6 +1,9 @@
 # Babbler
 Homemade twitter-like web application
 
+# Rapport
+[lien](https://docs.google.com/document/d/1zViId4edGmBRJwhvTrKNeVdjdQljeF1Te0gUB-9DO_w/edit?usp=sharing)
+
 # Installation
 
 Sur la racine du projet, exécuter les commandes suivantes en ordre.
