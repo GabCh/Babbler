@@ -30,4 +30,4 @@ STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_A
 ![](doc/sql_mode.png?raw=true)
 
 # Diagramme entité relation
-![](doc/DIagramme ER Projet.jpg) 
+![](doc/ERDiag.jpg) 
