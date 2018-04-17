@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS Follows(follower char(32),
                      FOREIGN KEY(followed) REFERENCES Babblers(username) ON DELETE CASCADE);
 
 CREATE TABLE IF NOT EXISTS Likes(id integer, 
-								 username char(12),
+								 username char(32),
                                  FOREIGN KEY(id) REFERENCES Babbles(id) ON DELETE CASCADE,
                                  FOREIGN KEY(username) REFERENCES Babblers(username) ON DELETE CASCADE);
                                  
@@ -38,7 +38,7 @@ CREATE INDEX LikesIndex USING HASH ON Likes (username, id);
                                  
 CREATE TABLE IF NOT EXISTS Comments(babbleID integer,
 									commentID integer,
-									username char(12),
+									username char(32),
                                     message TEXT,
                                     time_s TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                     nbLikes integer,
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS Comments(babbleID integer,
 CREATE INDEX commentIDX USING HASH ON Comments (babbleID);
                                     
 CREATE TABLE IF NOT EXISTS CommentLikes(id integer, 
-										username char(12),
+										username char(32),
 										FOREIGN KEY(id) REFERENCES Comments(commentID) ON DELETE CASCADE,
 										FOREIGN KEY(username) REFERENCES Babblers(username) ON DELETE CASCADE);
 
