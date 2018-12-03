@@ -2,7 +2,7 @@
 Homemade twitter-like web application
 
 # Rapport
-[Lien Google docs](https://drive.google.com/open?id=1lx70liwcA8EB2HQazvDFgBolvkQ33gXP)
+[Lien pdf](https://drive.google.com/open?id=1lx70liwcA8EB2HQazvDFgBolvkQ33gXP)
 
 # Installation
 
@@ -11,16 +11,14 @@ Sur la racine du projet, exécuter les commandes suivantes en ordre.
 ```bash
 pip install virtualenv
 virtualenv venv
-source venv/bin/activate (venv/Scripts/activate sous windows)
+source venv/bin/activate
 pip install -r requirements.txt
-mysql -u root -p < data/dump.sql (ou sous Workbench)
+mysql -u root -p < data/dump.sql
 ```
 
 Par la suite, exécuter le fichier ```data/populate.py``` dans votre IDE. Celui-ci s'occupera d'ajouter des données au projet.
 
 Finalement, il suffit de lancer l'application avec le fichier ```src/app.py```.
-
-(le main se trouve à la fin des deux fichiers)
 
 # Known problems
 - Lors de l'exécution du projet, si la page d'accueil retourne une erreur 500, c'est parce qu'il faut configurer le sql_mode ainsi (cette action est normalement exécuté par le script ```dump.sql```):
