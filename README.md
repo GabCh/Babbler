@@ -2,7 +2,7 @@
 Homemade twitter-like web application
 
 # Rapport
-[Lien Google docs](https://docs.google.com/document/d/1zViId4edGmBRJwhvTrKNeVdjdQljeF1Te0gUB-9DO_w/edit?usp=sharing)
+[Lien Google docs](https://drive.google.com/open?id=1lx70liwcA8EB2HQazvDFgBolvkQ33gXP)
 
 # Installation
 
