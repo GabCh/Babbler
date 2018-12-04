@@ -115,8 +115,8 @@ def register():
         password = hashlib.pbkdf2_hmac('sha256', data['password'].encode(), salt.encode(), 65336)
         password = str(binascii.hexlify(password))[2:-1]
         db.add_babbler(data['username'], data['public_name'], password)
-        shutil.copy(os.path.abspath('/static/placeholders/profile.jpg'),
-                    os.path.abspath('/static/images/' + str(data['username']) + '.jpg'))
+        shutil.copy(os.path.abspath('./static/placeholders/profile.jpg'),
+                    os.path.abspath('./static/images/' + str(data['username']) + '.jpg'))
     return view
 
 
