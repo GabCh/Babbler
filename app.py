@@ -17,10 +17,10 @@ app.config.from_object(__name__)
 app.secret_key = 'YmxhemVpdDQyMA=='
 
 # Config data for DB
-app.config['DB_HOST'] = "us-cdbr-iron-east-01.cleardb.net"
-app.config['DB_USER'] = "b51c0eb48a1a67"
-app.config['DB_PASSWORD'] = "8f942052"
-app.config['DB_NAME'] = "heroku_d1e7572e7bd26d0"
+app.config['DB_HOST'] = os.environ['DB_HOST']
+app.config['DB_USER'] = os.environ['DB_USER']
+app.config['DB_PASSWORD'] = os.environ['DB_PASSWORD']
+app.config['DB_NAME'] = os.environ['DB_NAME']
 db = BabblerDB(app)
 
 #  Hashing salt
