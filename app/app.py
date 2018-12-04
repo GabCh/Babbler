@@ -5,8 +5,8 @@ import os
 import shutil
 
 from flask import Flask, render_template, request, session, redirect, jsonify
-from src.babbler.babblerdb import BabblerDB
-from src.babbler.utils import get_tags_in_message
+from app.babbler.babblerdb import BabblerDB
+from app.babbler.utils import get_tags_in_message
 
 
 app = Flask(__name__)

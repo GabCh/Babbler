@@ -1,6 +1,6 @@
 import shutil
 import os
-from src.babbler.babblerdb import BabblerDB
+from app.babbler.babblerdb import BabblerDB
 from random import randint
 from flask import Flask
 from pyfiglet import Figlet
