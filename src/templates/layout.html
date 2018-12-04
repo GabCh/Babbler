@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Babbler</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/babble.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav id="menu" class="navbar is-primary is-fixed-top" role="navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/">
+                    <span class="icon is-large">
+                        <i class="fas fa-2x fa-comment-alt has-text-white"></i>
+                    </span>
+                    <h1 class="title is-1 has-text-dark">Babbler</h1>
+                </a>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start">
+                    <div class="navbar-item">
+                    <form action="/search" method="GET" id="search-form">
+                        Search for:
+                        <div class="field is-grouped">
+                            <input style="margin-right:20px;" type="text" value="{{ keyword }}" name="keyword">
+                        </div>
+                    </form>
+                </div>
+                </div>
+                <div class="navbar-end">
+                {% if not logged %}
+                    <div class="navbar-item">
+                        <a class="button is-info is-rounded" href="/login">
+                            <span class="icon">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <span>Login</span>
+                        </a>
+                    </div>
+                    <div class="navbar-item">
+                        <a class="button is-info is-rounded" href="/register">
+                            <span class="icon">
+                                <i class="fas fa-user-plus"></i>
+                            </span>
+                            <span>Register</span>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="navbar-item">
+                        <a class="button is-info is-inverted is-rounded" href="/new-babble">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span>New Babble</span>
+                        </a>
+                    </div>
+                    <div class="navbar-item">
+                        <a class="button is-info is-inverted is-rounded" href="/myprofile">
+                            <span class="icon">
+                                <i class="fas fa-child"></i>
+                            </span>
+                            <span>My profile</span>
+                        </a>
+                    </div>
+                    <div class="navbar-item">
+                        <a class="button is-danger is-rounded" href="/logout">
+                            <span>Logout</span>
+                            <span class="icon">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </span>
+                        </a>
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="main-body">
+        {% block body %}{% endblock %}
+    </div>
+    <footer class="layout-footer">
+        <div class="container">
+            <div class="content has-text-centered">
+                <p>
+                    <strong>Babbler</strong> by Jannik Lévesque, Gabriel Chantal, Gabriel Laliberté.
+                    <a href="https://github.com/GabCh/Babbler.git">GitHub repository</a>.
+                    GLO-2005, <a href="https://www.ulaval.ca">Université Laval</a>.
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
