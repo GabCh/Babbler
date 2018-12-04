@@ -17,10 +17,10 @@ app.config.from_object(__name__)
 app.secret_key = 'YmxhemVpdDQyMA=='
 
 # Config data for DB
-app.config['DB_HOST'] = os.environ['DB_HOST']
-app.config['DB_USER'] = os.environ['DB_USER']
-app.config['DB_PASSWORD'] = os.environ['DB_PASSWORD']
-app.config['DB_NAME'] = os.environ['DB_NAME']
+app.config['DB_HOST'] = "us-cdbr-iron-east-01.cleardb.net"
+app.config['DB_USER'] = "b51c0eb48a1a67"
+app.config['DB_PASSWORD'] = "8f942052"
+app.config['DB_NAME'] = "heroku_d1e7572e7bd26d0"
 db = BabblerDB(app)
 
 #  Hashing salt
@@ -115,8 +115,8 @@ def register():
         password = hashlib.pbkdf2_hmac('sha256', data['password'].encode(), salt.encode(), 65336)
         password = str(binascii.hexlify(password))[2:-1]
         db.add_babbler(data['username'], data['public_name'], password)
-        shutil.copy(os.path.abspath('static/placeholders/profile.jpg'),
-                    os.path.abspath('static/images/' + str(data['username']) + '.jpg'))
+        shutil.copy(os.path.abspath('/static/placeholders/profile.jpg'),
+                    os.path.abspath('/static/images/' + str(data['username']) + '.jpg'))
     return view
 
 
@@ -301,6 +301,4 @@ def delete_comment():
 
 
 if __name__ == '__main__':
-    app.run()
-else:
     app.run()
