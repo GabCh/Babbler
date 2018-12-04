@@ -3,6 +3,7 @@ import binascii
 import datetime
 import os
 import shutil
+import dj_database_url
 
 from flask import Flask, render_template, request, session, redirect, jsonify
 from src.babbler.babblerdb import BabblerDB

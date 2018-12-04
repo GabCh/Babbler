@@ -9,7 +9,6 @@ class BabblerDB(object):
                                           user=app.config['DB_USER'],
                                           password=app.config['DB_PASSWORD'],
                                           db=app.config['DB_NAME'],
-                                          port=3306,
                                           charset='utf8mb4',
                                           cursorclass=pymysql.cursors.DictCursor)
 
