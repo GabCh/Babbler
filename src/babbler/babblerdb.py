@@ -1,5 +1,5 @@
 import pymysql.cursors
-from app.babbler.utils import get_elapsed_time
+from src.babbler.utils import get_elapsed_time
 
 
 class BabblerDB(object):
