@@ -16,10 +16,10 @@ app.config.from_object(__name__)
 app.secret_key = 'YmxhemVpdDQyMA=='
 
 # Config data for DB
-app.config['DB_HOST'] = 'localhost'
-app.config['DB_USER'] = 'root'
-app.config['DB_PASSWORD'] = 'babblerisawesome'
-app.config['DB_NAME'] = 'Babbler'
+app.config['DB_HOST'] = os.environ['DB_HOST']
+app.config['DB_USER'] = os.environ['DB_USER']
+app.config['DB_PASSWORD'] = os.environ['DB_PASSWORD']
+app.config['DB_NAME'] = os.environ['DB_NAME']
 db = BabblerDB(app)
 
 #  Hashing salt
