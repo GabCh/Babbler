@@ -301,3 +301,5 @@ def delete_comment():
 
 if __name__ == '__main__':
     app.run()
+else:
+    app.run()
