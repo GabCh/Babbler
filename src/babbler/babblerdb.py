@@ -13,7 +13,7 @@ class BabblerDB(object):
                                           cursorclass=pymysql.cursors.DictCursor)
 
     def add_babbler(self, username, publicName, password):
-        sql = "INSERT INTO Babblers VALUES (%s , %s , %s)"
+        sql = "INSERT INTO babblers VALUES (%s , %s , %s)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (username, publicName, password))
@@ -22,7 +22,7 @@ class BabblerDB(object):
             print(e)
 
     def add_babble(self, id, username, message, time_s, tags):
-        sql = "INSERT INTO Babbles VALUES (%s, %s, %s, %s, 0, 0)"
+        sql = "INSERT INTO babbles VALUES (%s, %s, %s, %s, 0, 0)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (id, username, message, time_s))
@@ -33,7 +33,7 @@ class BabblerDB(object):
 
     def add_tags(self, babble_id, tags):
         for tag in tags:
-            sql = "INSERT INTO Tag VALUES (%s, %s)"
+            sql = "INSERT INTO tag VALUES (%s, %s)"
             try:
                 with self.connection.cursor() as cursor:
                     cursor.execute(sql, (babble_id, tag))
@@ -42,7 +42,7 @@ class BabblerDB(object):
                 print(e)
 
     def add_follower(self, follower, followed):
-        sql = "INSERT INTO Follows VALUES (%s, %s)"
+        sql = "INSERT INTO follows VALUES (%s, %s)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (follower, followed))
@@ -51,7 +51,7 @@ class BabblerDB(object):
             print(e)
 
     def add_like(self, id, username):
-        sql = "INSERT INTO Likes VALUES (%s, %s)"
+        sql = "INSERT INTO likes VALUES (%s, %s)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (id, username))
@@ -60,7 +60,7 @@ class BabblerDB(object):
             print(e)
 
     def add_comment_like(self, commentID, username):
-        sql = "INSERT INTO CommentLikes VALUES (%s, %s)"
+        sql = "INSERT INTO commentLikes VALUES (%s, %s)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (commentID, username))
@@ -69,7 +69,7 @@ class BabblerDB(object):
             print(e)
 
     def add_comment(self, babbleID, commentID, username, message, time_s):
-        sql = "INSERT INTO Comments VALUES (%s, %s, %s, %s, %s, 0)"
+        sql = "INSERT INTO comments VALUES (%s, %s, %s, %s, %s, 0)"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (babbleID, commentID, username, message, time_s))
@@ -80,7 +80,7 @@ class BabblerDB(object):
     def authenticate(self, username, password):
         try:
             with self.connection.cursor() as cursor:
-                sql = "SELECT username, publicName FROM Babblers WHERE username = %s AND password = %s"
+                sql = "SELECT username, publicName FROM babblers WHERE username = %s AND password = %s"
                 cursor.execute(sql, (username, password,))
                 result = cursor.fetchone()
                 return result
@@ -90,7 +90,7 @@ class BabblerDB(object):
     def following(self, user: str, other: str):
         try:
             with self.connection.cursor() as cursor:
-                sql = "SELECT follower, followed FROM Follows WHERE follower = %s AND followed = %s"
+                sql = "SELECT follower, followed FROM follows WHERE follower = %s AND followed = %s"
                 cursor.execute(sql, (user, other,))
                 result = cursor.fetchone()
                 if result:
@@ -105,7 +105,7 @@ class BabblerDB(object):
             with self.connection.cursor() as cursor:
                 sql = """
                     SELECT B.id, B.username, B.message, B.time_s, B.nbLikes, B.nbComments
-                    FROM Babbles B, Follows F
+                    FROM babbles B, follows F
                     WHERE F.follower LIKE %s AND F.followed = B.username OR B.username = %s
                     GROUP BY B.time_s DESC, B.username;"""
                 cursor.execute(sql, (username, username,))
@@ -125,7 +125,7 @@ class BabblerDB(object):
             with self.connection.cursor() as cursor:
                 sql = """
                     SELECT B.commentID, B.username, B.message, B.time_s, nbLikes
-                    FROM Comments B
+                    FROM comments B
                     WHERE B.babbleID = %s
                     GROUP BY B.time_s DESC, B.username;"""
                 cursor.execute(sql, (babbleID,))
@@ -141,7 +141,7 @@ class BabblerDB(object):
             print(e)
 
     def generate_babble_id(self):
-        sql = "SELECT MAX(id) AS max_id FROM Babbles"
+        sql = "SELECT MAX(id) AS max_id FROM babbles"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql)
@@ -154,7 +154,7 @@ class BabblerDB(object):
             print(e)
 
     def generate_comment_id(self):
-        sql = "SELECT MAX(commentID) AS max_id FROM Comments"
+        sql = "SELECT MAX(commentID) AS max_id FROM comments"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql)
@@ -171,7 +171,7 @@ class BabblerDB(object):
             with self.connection.cursor() as cursor:
                 sql = """
                 SELECT B.id, B.username, B.message, B.time_s, B.nbLikes, B.nbComments
-                FROM Babbles B
+                FROM babbles B
                 ORDER BY B.time_s DESC
                 LIMIT 100;"""
 
@@ -193,8 +193,8 @@ class BabblerDB(object):
         try:
             keyword = '%' + keyword + '%'
             with self.connection.cursor() as cursor:
-                sql = "SELECT id, username, message, time_s, nbLikes, nbComments FROM Babbles WHERE message LIKE %s" \
-                      "GROUP BY Babbles.time_s DESC, Babbles.username;"
+                sql = "SELECT id, username, message, time_s, nbLikes, nbComments FROM babbles WHERE message LIKE %s" \
+                      "GROUP BY babbles.time_s DESC, babbles.username;"
                 cursor.execute(sql, (keyword,))
                 results = cursor.fetchall()
                 for result in results:
@@ -213,8 +213,8 @@ class BabblerDB(object):
         try:
             with self.connection.cursor() as cursor:
                 sql = "SELECT * "\
-                      "FROM Babbles WHERE id IN (SELECT DISTINCT id FROM Tag WHERE tag = %s)" \
-                      "GROUP BY Babbles.time_s DESC, Babbles.username;"
+                      "FROM babbles WHERE id IN (SELECT DISTINCT id FROM tag WHERE tag = %s)" \
+                      "GROUP BY babbles.time_s DESC, babbles.username;"
                 cursor.execute(sql, (tag,))
                 results = cursor.fetchall()
                 for result in results:
@@ -233,8 +233,8 @@ class BabblerDB(object):
         try:
             with self.connection.cursor() as cursor:
                 sql = "SELECT id, username, message, time_s, nbLikes, nbComments "\
-                      "FROM Babbles WHERE username = %s" \
-                      "GROUP BY Babbles.time_s DESC, Babbles.username;"
+                      "FROM babbles WHERE username = %s" \
+                      "GROUP BY babbles.time_s DESC, babbles.username;"
                 cursor.execute(sql, (username,))
                 results = cursor.fetchall()
                 for result in results:
@@ -252,7 +252,7 @@ class BabblerDB(object):
     def read_tags(self, babble_id: int):
         try:
             with self.connection.cursor() as cursor:
-                sql = "SELECT DISTINCT tag FROM Tag WHERE id = %s"
+                sql = "SELECT DISTINCT tag FROM tag WHERE id = %s"
                 cursor.execute(sql, (babble_id,))
                 results = cursor.fetchall()
                 if results:
@@ -266,7 +266,7 @@ class BabblerDB(object):
         try:
             keyword = '%' + username + '%'
             with self.connection.cursor() as cursor:
-                sql = "SELECT username, publicName FROM Babblers WHERE username LIKE %s"
+                sql = "SELECT username, publicName FROM babblers WHERE username LIKE %s"
                 cursor.execute(sql, (keyword,))
                 results = cursor.fetchall()
                 if results:
@@ -280,7 +280,7 @@ class BabblerDB(object):
         try:
             with self.connection.cursor() as cursor:
                 sql = """
-                    SELECT B.username, B.publicName FROM Babblers B
+                    SELECT B.username, B.publicName FROM babblers B
                     WHERE B.username IN
                     (SELECT F.follower FROM Follows F WHERE F.followed = %s);
                       """
@@ -297,7 +297,7 @@ class BabblerDB(object):
         try:
             with self.connection.cursor() as cursor:
                 sql = """
-                    SELECT B.username, B.publicName FROM Babblers B
+                    SELECT B.username, B.publicName FROM babblers B
                     WHERE B.username IN
                     (SELECT F.followed FROM Follows F WHERE F.follower = %s);
                       """
@@ -311,7 +311,7 @@ class BabblerDB(object):
             print(e)
 
     def remove_follower(self, follower, followed):
-        sql = "DELETE FROM Follows WHERE follower = %s AND followed = %s"
+        sql = "DELETE FROM follows WHERE follower = %s AND followed = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (follower, followed))
@@ -320,7 +320,7 @@ class BabblerDB(object):
             print(e)
 
     def remove_babbler(self, username):
-        sql = "DELETE FROM Babblers WHERE username = %s"
+        sql = "DELETE FROM babblers WHERE username = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (username,))
@@ -329,7 +329,7 @@ class BabblerDB(object):
             print(e)
 
     def remove_like(self, id, username):
-        sql = "DELETE FROM Likes WHERE id = %s AND username = %s"
+        sql = "DELETE FROM likes WHERE id = %s AND username = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (id, username))
@@ -338,7 +338,7 @@ class BabblerDB(object):
             print(e)
 
     def remove_comment_like(self, commentID, username):
-        sql = "DELETE FROM CommentLikes WHERE id = %s AND username = %s"
+        sql = "DELETE FROM commentlikes WHERE id = %s AND username = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (commentID, username))
@@ -347,7 +347,7 @@ class BabblerDB(object):
             print(e)
 
     def remove_babble(self, id):
-        sql = "DELETE FROM Babbles WHERE id = %s"
+        sql = "DELETE FROM babbles WHERE id = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (id,))
@@ -356,7 +356,7 @@ class BabblerDB(object):
             print(e)
 
     def remove_comment(self, commentID):
-        sql = "DELETE FROM Comments WHERE commentID = %s"
+        sql = "DELETE FROM comments WHERE commentID = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (commentID,))
@@ -367,7 +367,7 @@ class BabblerDB(object):
     def validate_username(self, username):
         try:
             with self.connection.cursor() as cursor:
-                sql = "SELECT username FROM Babblers WHERE username = %s"
+                sql = "SELECT username FROM babblers WHERE username = %s"
                 cursor.execute(sql, (username,))
                 result = cursor.fetchone()
                 return result
@@ -388,7 +388,7 @@ class BabblerDB(object):
             print(e)
 
     def already_liked_this_comment(self, commentID, username):
-        sql = "SELECT username FROM CommentLikes WHERE id = %s AND username = %s"
+        sql = "SELECT username FROM commentlikes WHERE id = %s AND username = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (commentID, username))
@@ -401,7 +401,7 @@ class BabblerDB(object):
             print(e)
 
     def get_nbLikes(self, id):
-        sql = "SELECT nbLikes FROM Babbles WHERE id = %s"
+        sql = "SELECT nbLikes FROM babbles WHERE id = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (id,))
@@ -411,7 +411,7 @@ class BabblerDB(object):
             print(e)
 
     def get_comment_nbLikes(self, commentID):
-        sql = "SELECT nbLikes FROM Comments WHERE commentID = %s"
+        sql = "SELECT nbLikes FROM comments WHERE commentID = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (commentID,))
@@ -421,7 +421,7 @@ class BabblerDB(object):
             print(e)
 
     def get_nbComments(self, id):
-        sql = "SELECT nbComments FROM Babbles WHERE id = %s"
+        sql = "SELECT nbComments FROM babbles WHERE id = %s"
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql, (id,))
