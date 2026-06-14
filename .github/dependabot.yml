@@ -1,0 +1,20 @@
+version: 2
+updates:
+  # Enable version updates for npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      development:
+        dependency-type: "dev"
+      production:
+        dependency-type: "production"
+    allow:
+      - dependency-type: "all"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore(dev)"
+      include: "scope"
+    pull-request-branch-name:
+      separator: "/"
